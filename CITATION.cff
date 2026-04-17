@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+message: "If you use this simulation or cite this paper, please use the metadata below."
+title: "Circular Leverage in Bank-NBFI Synthetic Risk Transfer Networks"
+version: "1.0.0"
+date-released: 2026-04-17
+license: MIT
+type: software
+repository-code: "https://github.com/chokmah-me/srt-circular-leverage"
+url: "https://doi.org/[Zenodo DOI upon deposit]"
+keywords:
+  - synthetic risk transfer
+  - circular leverage
+  - network contagion
+  - phase transition
+  - Dragon King
+  - LPPLS
+  - private credit
+  - systemic risk
+authors:
+  - family-names: "Bilar"
+    given-names: "Daniyel Yaacov"
+    affiliation: "Chokmah LLC"
+    email: "chokmah-dyb@pm.me"
+    orcid: "https://orcid.org/0000-0002-9040-6914"
+preferred-citation:
+  type: article
+  title: "Circular Leverage in Bank-NBFI Synthetic Risk Transfer Networks"
+  year: 2026
+  journal: "Zenodo preprint"
+  doi: "[DOI upon deposit]"
+  authors:
+    - family-names: "Bilar"
+      given-names: "Daniyel Yaacov"
+      affiliation: "Chokmah LLC"
+      orcid: "https://orcid.org/0000-0002-9040-6914"
