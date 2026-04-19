@@ -1,6 +1,6 @@
 # Circular Leverage in Bank-NBFI SRT Networks
 
-**Preprint:** [Zenodo DOI — add upon deposit]  
+**Preprint:** [[Zenodo DOI — add upon deposit] ](https://zenodo.org/records/19632278) 
 **License:** MIT (code) · CC BY 4.0 (paper)  
 **Status:** Preprint, April 2026
 
