@@ -123,7 +123,7 @@ See `CITATION.cff` or use the Zenodo DOI. BibTeX:
   author  = {Bilar, Daniyel Yaacov},
   year    = {2026},
   journal = {Zenodo preprint},
-  doi     = {[DOI upon deposit]}
+  doi     = {10.5281/zenodo.19632278}
 }
 ```
 
