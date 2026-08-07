@@ -1,0 +1,30 @@
+computational-claim-gate verify  ok=True
+schema: cd-claim-gate/v1
+project: C:\Users\Elke Shayna\Documents\00Dev\circular-networks-SRT-networks
+manifest: C:\Users\Elke Shayna\Documents\00Dev\circular-networks-SRT-networks\claim-manifest.json
+timestamp: 2026-08-07T00:04:23.660844+00:00
+claims: 1
+
+## claim srt-phase-transition  ok=True  exit=0  ms=10293
+cmd: ['python', 'verify_srt_claims.py']
+--- log tail ---
+verify_srt_claims.py — computational claim gate (thin MC)
+seed=42 n_runs=80 (paper full sweep uses 1000)
+non-claims: density magnitude 0.18–0.61, multi-seed stability,
+            cockpit Q1-2026 market readings, LPPLS fit
+
+OK:   structure λ_target=0.00 actual=0.000 cascade=0.0667
+OK:   structure λ_target=0.50 actual=0.505 cascade=0.1667
+OK:   structure λ_target=0.95 actual=0.956 cascade=0.2667
+OK:   structure λ_target=1.00 actual=1.000 cascade=0.2000
+
+[phase] seed=42 n_runs=80 shock=0.05 elapsed=5.4s
+[phase] λ_onset=0.90  λ*=0.95  μ(0)=0.0850  μ(1)=0.3129  max_jump=0.1262  early_max_jump=0.0104
+OK:   λ_onset=0.90 in [0.75, 0.95]
+OK:   λ*=0.95 in [0.9, 1.0]
+OK:   onset ≤ star (0.90 ≤ 0.95)
+OK:   μ(1)/μ(0)=3.681 ≥ 1.8
+OK:   max_jump/early_max=12.120 ≥ 4.0
+
+wrote C:\Users\Elke Shayna\Documents\00Dev\circular-networks-SRT-networks\results\srt_claim_verify.json
+ALL CHECKS PASSED

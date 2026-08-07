@@ -1,0 +1,11 @@
+{
+  "schema": "cd-claim-gate/v1",
+  "claims": [
+    {
+      "id": "srt-phase-transition",
+      "description": "Thin Monte Carlo: λ_onset/λ* location, two-stage order, nonlinear jump (seed 42, n_runs=80). Not the publication 1000-run sweep.",
+      "command": ["python", "verify_srt_claims.py"],
+      "timeout_sec": 600
+    }
+  ]
+}

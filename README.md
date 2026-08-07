@@ -70,6 +70,23 @@ CITATION.cff
 
 ---
 
+## Computational claim gate (thin MC)
+
+Load-bearing simulation claims (λ_onset / λ* location, two-stage order, nonlinear
+jump) are gated by a thin harness — not a substitute for the full 1000-run sweep.
+
+```bash
+# From this repo root (needs the same deps as the sim)
+python verify_srt_claims.py
+
+# Or via computational-claim-gate (writes results/claim_verify_*.{json,txt})
+python path/to/computational-claim-gate/scripts/verify_claim_project.py --project .
+```
+
+Manifest: `claim-manifest.json`. Policy and non-claims: `results/claim-holds-brief.md`.
+
+---
+
 ## Reproducing specific results
 
 **Verify stability across seeds:**
