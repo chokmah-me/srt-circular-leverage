@@ -6,6 +6,8 @@
 
 **Status:** Preprint, April 2026
 
+**Claim gate (new):** `python verify_srt_claims.py` — thin re-run of load-bearing phase-transition claims (~10s). See [Quickstart](#quickstart), [Computational claim gate](#computational-claim-gate-thin-mc), and [CHANGELOG.md](CHANGELOG.md).
+
 ---
 
 ## What this paper does
@@ -25,14 +27,19 @@ git clone https://github.com/chokmah-me/srt-circular-leverage
 cd srt-circular-leverage
 pip install -r requirements.txt
 
-# Full run (publication quality, ~5 min)
+# 1) Claim gate first (~10s): λ_onset / λ* location, two-stage order, nonlinearity
+#    Exit 0 = load-bearing sim claims still hold under thin MC (not full 1000-run sweep)
+python verify_srt_claims.py
+
+# 2) Full run (publication quality, ~5 min)
 python srt_simulation.py
 
-# Fast development run (~30 sec)
+# 3) Fast development run (~30 sec) — figures only, no claim asserts
 python srt_simulation.py --quick
 ```
 
-Outputs land in `figures/`:
+Gate evidence lands in `results/` (`claim_verify_meta.json`, `srt_claim_verify.json`, brief).  
+Simulation outputs land in `figures/`:
 - `fig1_phase_transition.pdf` — main result
 - `fig2_distributions.pdf` — Dragon King vs power-law tail
 - `fig3_sensitivity.pdf` — investor concentration sensitivity
@@ -58,11 +65,14 @@ scipy>=1.10
 ## Repository structure
 
 ```
-srt_simulation.py     # all code: network builder, cascade engine,
-                      # Monte Carlo sweep, plots, proxy metrics, main()
-srt_paper.md          # paper (Markdown source)
-figures/              # generated output (created on first run)
+srt_simulation.py         # network builder, cascade engine, MC sweep, plots, main()
+verify_srt_claims.py      # computational claim gate (thin MC) — NEW
+claim-manifest.json       # claim-gate manifest (cd-claim-gate/v1) — NEW
+results/                  # gate evidence + claim-holds brief — NEW
+figures/                  # generated figures / cockpit CSV
+dyb-2026k-circular-nw-risk-v1.md   # paper (Markdown source)
 README.md
+CHANGELOG.md
 LICENSE
 requirements.txt
 CITATION.cff
@@ -72,19 +82,26 @@ CITATION.cff
 
 ## Computational claim gate (thin MC)
 
-Load-bearing simulation claims (λ_onset / λ* location, two-stage order, nonlinear
-jump) are gated by a thin harness — not a substitute for the full 1000-run sweep.
+**What it is.** A fast, seeded harness that re-runs the paper’s *load-bearing simulation* claims and fails with a clear reason if they break. Prefer this after any edit to the cascade engine or sweep helpers.
+
+**Checked (thin MC, seed 42, n_runs=80):**
+
+- `lambda_actual` tracks requested λ; cascade size ∈ [0, 1]
+- λ_onset and λ\* in high-λ bands (paper ≈ 0.85–0.95 / ≈ 0.95)
+- two-stage order (onset ≤ star)
+- high-λ cascade elevated vs baseline; jump concentrated at high λ
+
+**Not checked:** full 1000-run publication sweep; density magnitude 0.18–0.61; multi-seed stability; cockpit *market* readings; LPPLS fits. Policy: `results/claim-holds-brief.md`. Changelog: [CHANGELOG.md](CHANGELOG.md).
 
 ```bash
-# From this repo root (needs the same deps as the sim)
+# From this repo root (same deps as the sim)
 python verify_srt_claims.py
 
-# Or via computational-claim-gate (writes results/claim_verify_*.{json,txt})
+# Or via computational-claim-gate (writes/refreshes results/claim_verify_*.{json,txt})
 python path/to/computational-claim-gate/scripts/verify_claim_project.py --project .
 ```
 
-Manifest: `claim-manifest.json`. Policy and non-claims: `results/claim-holds-brief.md`.
-
+Manifest: `claim-manifest.json` (claim id `srt-phase-transition`).
 ---
 
 ## Reproducing specific results
