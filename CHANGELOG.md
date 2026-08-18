@@ -2,6 +2,10 @@
 
 All notable changes to this companion repository are documented here.
 
+## [Unreleased] — 2026-08-17 — figure embeds
+
+- Paper md now embeds Figures 1–5 (`fig1_phase_transition.png` … `fig5_density_sensitivity.png`) so Typora can export a figure-bearing PDF. No figure restyle.
+
 ## [Unreleased] — 2026-08-07
 
 ### Added
