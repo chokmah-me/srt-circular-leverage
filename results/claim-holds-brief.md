@@ -1,13 +1,13 @@
 # Claim-holds brief — circular-networks-SRT-networks
 
 ## Status
-**Verified** (thin Monte Carlo gate, 2026-08-07)
+**Verified** (thin Monte Carlo gate, 2026-08-18; `status=pass`)
 
 ## Claims
 
 | id | command | exit | notes |
 |----|---------|------|-------|
-| `srt-phase-transition` | `python verify_srt_claims.py` | 0 | ~10s; seed 42; n_runs=80 |
+| `srt-phase-transition` | `python verify_srt_claims.py` | 0 | 6.4s; seed 42; n_runs=80 |
 
 ### Observed (gate run)
 
@@ -27,7 +27,7 @@ Structural checks: `lambda_actual` tracks requested λ; cascade_size ∈ [0, 1].
 - Shock size: 0.05
 - Grid: linspace(0, 1, 21)
 - Interpreter: host Python with numpy, networkx, matplotlib, scipy
-- Evidence written by `computational-claim-gate` `verify_claim_project.py`
+- Evidence written by `computational-claim-gate` `verify_claim_project.py` (2026-08-18T01:37:27Z)
 
 ## Not checked here
 
@@ -42,6 +42,7 @@ Structural checks: `lambda_actual` tracks requested λ; cascade_size ∈ [0, 1].
 
 - `results/claim_verify_meta.json`
 - `results/claim_verify_out.txt`
+- `results/claim_verify_brief.md`
 - `results/srt_claim_verify.json` (harness payload)
 - Project `claim-manifest.json`
 

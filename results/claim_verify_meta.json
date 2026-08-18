@@ -12,17 +12,18 @@
         "verify_srt_claims.py"
       ],
       "exit_code": 0,
-      "duration_ms": 10293,
-      "log_tail": "verify_srt_claims.py \u2014 computational claim gate (thin MC)\nseed=42 n_runs=80 (paper full sweep uses 1000)\nnon-claims: density magnitude 0.18\u20130.61, multi-seed stability,\n            cockpit Q1-2026 market readings, LPPLS fit\n\nOK:   structure \u03bb_target=0.00 actual=0.000 cascade=0.0667\nOK:   structure \u03bb_target=0.50 actual=0.505 cascade=0.1667\nOK:   structure \u03bb_target=0.95 actual=0.956 cascade=0.2667\nOK:   structure \u03bb_target=1.00 actual=1.000 cascade=0.2000\n\n[phase] seed=42 n_runs=80 shock=0.05 elapsed=5.4s\n[phase] \u03bb_onset=0.90  \u03bb*=0.95  \u03bc(0)=0.0850  \u03bc(1)=0.3129  max_jump=0.1262  early_max_jump=0.0104\nOK:   \u03bb_onset=0.90 in [0.75, 0.95]\nOK:   \u03bb*=0.95 in [0.9, 1.0]\nOK:   onset \u2264 star (0.90 \u2264 0.95)\nOK:   \u03bc(1)/\u03bc(0)=3.681 \u2265 1.8\nOK:   max_jump/early_max=12.120 \u2265 4.0\n\nwrote C:\\Users\\Elke Shayna\\Documents\\00Dev\\circular-networks-SRT-networks\\results\\srt_claim_verify.json\nALL CHECKS PASSED",
+      "duration_ms": 6415,
+      "log_tail": "verify_srt_claims.py \u2014 computational claim gate (thin MC)\nseed=42 n_runs=80 (paper full sweep uses 1000)\nnon-claims: density magnitude 0.18\u20130.61, multi-seed stability,\n            cockpit Q1-2026 market readings, LPPLS fit\n\nOK:   structure \u03bb_target=0.00 actual=0.000 cascade=0.0667\nOK:   structure \u03bb_target=0.50 actual=0.505 cascade=0.1667\nOK:   structure \u03bb_target=0.95 actual=0.956 cascade=0.2667\nOK:   structure \u03bb_target=1.00 actual=1.000 cascade=0.2000\n\n[phase] seed=42 n_runs=80 shock=0.05 elapsed=2.7s\n[phase] \u03bb_onset=0.90  \u03bb*=0.95  \u03bc(0)=0.0850  \u03bc(1)=0.3129  max_jump=0.1262  early_max_jump=0.0104\nOK:   \u03bb_onset=0.90 in [0.75, 0.95]\nOK:   \u03bb*=0.95 in [0.9, 1.0]\nOK:   onset \u2264 star (0.90 \u2264 0.95)\nOK:   \u03bc(1)/\u03bc(0)=3.681 \u2265 1.8\nOK:   max_jump/early_max=12.120 \u2265 4.0\n\nwrote C:\\Users\\Elke Shayna\\Documents\\00Dev\\circular-networks-SRT-networks\\results\\srt_claim_verify.json\nALL CHECKS PASSED",
       "errors": [],
       "golden_ok": null,
       "golden_details": []
     }
   ],
   "errors": [],
-  "timestamp_utc": "2026-08-07T00:04:23.660844+00:00",
+  "timestamp_utc": "2026-08-18T01:37:27.853458+00:00",
   "policy": {
     "default_timeout_sec": 600,
     "self_certify_by_reading": false
-  }
+  },
+  "status": "pass"
 }

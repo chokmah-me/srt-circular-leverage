@@ -33,7 +33,7 @@
     "seed": 42,
     "n_runs": 80,
     "shock_size": 0.05,
-    "elapsed_sec": 5.382,
+    "elapsed_sec": 2.675,
     "lambda_onset": 0.9,
     "lambda_star": 0.9500000000000001,
     "mean_cascade_lambda0": 0.08499999999999999,

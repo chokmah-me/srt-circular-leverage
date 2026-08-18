@@ -6,7 +6,7 @@
 
 **Status:** Preprint, April 2026
 
-**Claim gate (new):** `python verify_srt_claims.py` — thin re-run of load-bearing phase-transition claims (~10s). See [Quickstart](#quickstart), [Computational claim gate](#computational-claim-gate-thin-mc), and [CHANGELOG.md](CHANGELOG.md).
+**Claim gate:** `python verify_srt_claims.py` — thin re-run of load-bearing phase-transition claims (~10s). Last verified 2026-08-18 (`status=pass`). See [Quickstart](#quickstart), [Computational claim gate](#computational-claim-gate-thin-mc), and [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
@@ -38,7 +38,7 @@ python srt_simulation.py
 python srt_simulation.py --quick
 ```
 
-Gate evidence lands in `results/` (`claim_verify_meta.json`, `srt_claim_verify.json`, brief).  
+Gate evidence lands in `results/` (`claim_verify_meta.json`, `claim_verify_out.txt`, `claim_verify_brief.md`, `srt_claim_verify.json`, `claim-holds-brief.md`).  
 Simulation outputs land in `figures/`:
 - `fig1_phase_transition.pdf` — main result
 - `fig2_distributions.pdf` — Dragon King vs power-law tail
@@ -66,9 +66,9 @@ scipy>=1.10
 
 ```
 srt_simulation.py         # network builder, cascade engine, MC sweep, plots, main()
-verify_srt_claims.py      # computational claim gate (thin MC) — NEW
-claim-manifest.json       # claim-gate manifest (cd-claim-gate/v1) — NEW
-results/                  # gate evidence + claim-holds brief — NEW
+verify_srt_claims.py      # computational claim gate (thin MC)
+claim-manifest.json       # claim-gate manifest (cd-claim-gate/v1)
+results/                  # gate evidence + claim-holds brief
 figures/                  # generated figures / cockpit CSV
 dyb-2026k-circular-nw-risk-v1.md   # paper (Markdown source)
 README.md
@@ -91,7 +91,7 @@ CITATION.cff
 - two-stage order (onset ≤ star)
 - high-λ cascade elevated vs baseline; jump concentrated at high λ
 
-**Not checked:** full 1000-run publication sweep; density magnitude 0.18–0.61; multi-seed stability; cockpit *market* readings; LPPLS fits. Policy: `results/claim-holds-brief.md`. Changelog: [CHANGELOG.md](CHANGELOG.md).
+**Not checked:** full 1000-run publication sweep; density magnitude 0.18–0.61; multi-seed stability; cockpit *market* readings; LPPLS fits. Policy: `results/claim-holds-brief.md`. Changelog: [CHANGELOG.md](CHANGELOG.md). Last run: 2026-08-18, `status=pass`.
 
 ```bash
 # From this repo root (same deps as the sim)
