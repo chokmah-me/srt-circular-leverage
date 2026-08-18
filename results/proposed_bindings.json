@@ -1,0 +1,466 @@
+{
+  "schema": "cd-manuscript-integrity-propose/v1",
+  "manuscript": "dyb-2026k-circular-nw-risk-v2.md",
+  "count": 51,
+  "candidates": [
+    {
+      "value": 66.0,
+      "token": "66%",
+      "context": "stantiated the circular leverage channel: transaction-level ECB data show banks are 57 to 66% more likely to sell SRTs to investors they also finance, with an estimated 26% of SRT fun",
+      "suggested_id": "stantiated-the-circular-leverage-cha-66%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 26.0,
+      "token": "26%",
+      "context": "are 57 to 66% more likely to sell SRTs to investors they also finance, with an estimated 26% of SRT funding traceable to bank credit (Osberghaus and Schepens, 2026); the FSB's May 20",
+      "suggested_id": "are-57-to-66-more-likely-to-sell-srt-26%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 26.0,
+      "token": "26%",
+      "context": "epens, 2026, using ECB AnaCredit data), which estimates aggregate self-funding at roughly 26% and documents two additional channels (monitoring degradation and strategic loan selectio",
+      "suggested_id": "epens-2026-using-ecb-anacredit-data-26%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 95.0,
+      "token": "95%",
+      "context": "rself. Researchers found that this arrangement stays stable up to a critical point around 95% self-funding, then suddenly becomes fragile. Since this paper was first published, Europe",
+      "suggested_id": "rself-researchers-found-that-this-ar-95%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 26.0,
+      "token": "26%",
+      "context": "rtially estimated: Osberghaus and Schepens (2026) place aggregate self-funding at roughly 26%, well below the simulation's critical zone. That 26% is a market-wide average; per-bank t",
+      "suggested_id": "rtially-estimated-osberghaus-and-sch-26%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 26.0,
+      "token": "26%",
+      "context": "ce aggregate self-funding at roughly 26%, well below the simulation's critical zone. That 26% is a market-wide average; per-bank tail values remain unknown. The six proxy metrics stil",
+      "suggested_id": "ce-aggregate-self-funding-at-roughly-26%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 66.0,
+      "token": "66%",
+      "context": "saction-level data from the ECB's AnaCredit credit registry, finding that banks are 57 to 66% more likely to sell SRTs to investors they also finance and that roughly 26% of SRT fundi",
+      "suggested_id": "saction-level-data-from-the-ecb-s-an-66%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 26.0,
+      "token": "26%",
+      "context": "ks are 57 to 66% more likely to sell SRTs to investors they also finance and that roughly 26% of SRT funding may trace back to bank credit. Second, the FSB issued a dedicated report o",
+      "suggested_id": "ks-are-57-to-66-more-likely-to-sell--26%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 95.0,
+      "token": "95%",
+      "context": "s): what density controls is cascade *magnitude* at high \u03bb, not where the cliff sits. The 95% threshold is therefore a stable target for supervision. Third, we use Sornette's Dragon K",
+      "suggested_id": "s-what-density-controls-is-cascade-m-95%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 80.0,
+      "token": "80%",
+      "context": "itization. The portfolio's credit risk is sliced into tranches: a senior piece (typically 80% or more of the notional) that the bank retains, a mezzanine piece (the next 7-10%), and a",
+      "suggested_id": "itization-the-portfolio-s-credit-ris-80%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": true
+    },
+    {
+      "value": 10.0,
+      "token": "10%",
+      "context": "pically 80% or more of the notional) that the bank retains, a mezzanine piece (the next 7-10%), and a first-loss piece (the bottom 5-8%). The bank finds a buyer for the mezzanine and",
+      "suggested_id": "pically-80-or-more-of-the-notional-t-10%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 8.0,
+      "token": "8%",
+      "context": "he bank retains, a mezzanine piece (the next 7-10%), and a first-loss piece (the bottom 5-8%). The bank finds a buyer for the mezzanine and first-loss tranches, usually a private cre",
+      "suggested_id": "he-bank-retains-a-mezzanine-piece-th-8%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 11.0,
+      "token": "11%",
+      "context": "ed structure) or signs a guarantee (unfunded). The bank pays the buyer a premium (often 8-11% annually in the current environment) and in exchange receives regulatory recognition that",
+      "suggested_id": "ed-structure-or-signs-a-guarantee-un-11%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 400.0,
+      "token": "400%",
+      "context": "by such instruments globally, a fivefold increase from 2016. North American issuance grew 400% over the same period after the Federal Reserve recognized Credit-Linked Notes as a valid",
+      "suggested_id": "by-such-instruments-globally-a-fivef-400%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 10.0,
+      "token": "10%",
+      "context": "orporate loans. Thirty-five banks, many among the largest in the euro area, had more than 10% of their corporate loan portfolio synthetically transferred. Three findings are directly",
+      "suggested_id": "orporate-loans-thirty-five-banks-man-10%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 66.0,
+      "token": "66%",
+      "context": "ee findings are directly relevant to this paper. **Interconnectedness.** Banks are 57 to 66% more likely to sell an SRT to a non-bank investor with which they also have a credit rela",
+      "suggested_id": "ee-findings-are-directly-relevant-to-66%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 26.0,
+      "token": "26%",
+      "context": "tent with partial debt financing of the SRT position. Their estimate implies that roughly 26% of SRT funding may trace back to bank credit. In the terms of our model, this places the",
+      "suggested_id": "tent-with-partial-debt-financing-of--26%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 15.0,
+      "token": "15%",
+      "context": "ritical zone at 0.85 to 0.95. The study also reports a median junior tranche thickness of 15%, nearly double our default \u03b4 = 0.08. We re-ran the simulation at \u03b4 = 0.15; the phase tran",
+      "suggested_id": "ritical-zone-at-0-85-to-0-95-the-stu-15%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 70.0,
+      "token": "70%",
+      "context": "on causally. The probability of a loan being synthetically transferred increases by up to 70% at this threshold. Banks then redeploy freed capital into new lending, leaving themselves",
+      "suggested_id": "on-causally-the-probability-of-a-loa-70%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 75.0,
+      "token": "75%",
+      "context": "ion \u03ba.** Motivated by the BIS (2026) finding that the top 10 investors globally hold over 75% of outstanding SRT exposure, we assign protection weights from a concentration-adjusted e",
+      "suggested_id": "ion-motivated-by-the-bis-2026-fin-75%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 20.0,
+      "token": "20%",
+      "context": "\u03b4 = 0.08. **Bank distress condition.** A bank becomes distressed when it loses more than 20% of its total SRT-derived RWA relief through fund failures. This threshold reflects the re",
+      "suggested_id": "0-08-bank-distress-condition-a-20%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 20.0,
+      "token": "20%",
+      "context": "facing a large sudden jump in RWAs must either raise capital quickly or contract lending; 20% is a conservative estimate of the point at which that pressure becomes acute. **Circular",
+      "suggested_id": "facing-a-large-sudden-jump-in-rwas-m-20%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 1.0,
+      "token": "1.0",
+      "context": "ks | B | 10 | 5\u201320 | | Funds | F | 20 | 10\u201350 | | Self-funding fraction | \u03bb | sweep | 0.0\u20131.0 | | Tranche thickness | \u03b4 | 0.08 | 0.04\u20130.15 | | Shock size | s | 0.05 | 0.01\u20130.20 | | In",
+      "suggested_id": "ks-b-10-5-20-funds-f-20-1.0",
+      "in_table": true,
+      "bucket": "table_cell",
+      "suggested_in_artifacts": true
+    },
+    {
+      "value": 0.04,
+      "token": "0.04",
+      "context": "10\u201350 | | Self-funding fraction | \u03bb | sweep | 0.0\u20131.0 | | Tranche thickness | \u03b4 | 0.08 | 0.04\u20130.15 | | Shock size | s | 0.05 | 0.01\u20130.20 | | Investor concentration | \u03ba | 0.75 | 0.40\u20130",
+      "suggested_id": "10-50-self-funding-fraction-sw-0.04",
+      "in_table": true,
+      "bucket": "table_cell",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 0.15,
+      "token": "0.15",
+      "context": "0 | | Self-funding fraction | \u03bb | sweep | 0.0\u20131.0 | | Tranche thickness | \u03b4 | 0.08 | 0.04\u20130.15 | | Shock size | s | 0.05 | 0.01\u20130.20 | | Investor concentration | \u03ba | 0.75 | 0.40\u20130.98 |",
+      "suggested_id": "0-self-funding-fraction-sweep-0.15",
+      "in_table": true,
+      "bucket": "table_cell",
+      "suggested_in_artifacts": true
+    },
+    {
+      "value": 0.01,
+      "token": "0.01",
+      "context": "sweep | 0.0\u20131.0 | | Tranche thickness | \u03b4 | 0.08 | 0.04\u20130.15 | | Shock size | s | 0.05 | 0.01\u20130.20 | | Investor concentration | \u03ba | 0.75 | 0.40\u20130.98 | | Network density (bank connecti",
+      "suggested_id": "sweep-0-0-1-0-tranche-thickness-0.01",
+      "in_table": true,
+      "bucket": "table_cell",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 0.2,
+      "token": "0.20",
+      "context": "p | 0.0\u20131.0 | | Tranche thickness | \u03b4 | 0.08 | 0.04\u20130.15 | | Shock size | s | 0.05 | 0.01\u20130.20 | | Investor concentration | \u03ba | 0.75 | 0.40\u20130.98 | | Network density (bank connections p",
+      "suggested_id": "p-0-0-1-0-tranche-thickness-0.20",
+      "in_table": true,
+      "bucket": "table_cell",
+      "suggested_in_artifacts": true
+    },
+    {
+      "value": 0.4,
+      "token": "0.40",
+      "context": "| 0.04\u20130.15 | | Shock size | s | 0.05 | 0.01\u20130.20 | | Investor concentration | \u03ba | 0.75 | 0.40\u20130.98 | | Network density (bank connections per fund) | d | 2.0 | 1.0\u20135.0 | | Monte Carlo",
+      "suggested_id": "0-04-0-15-shock-size-s-0-05-0.40",
+      "in_table": true,
+      "bucket": "table_cell",
+      "suggested_in_artifacts": true
+    },
+    {
+      "value": 0.98,
+      "token": "0.98",
+      "context": "4\u20130.15 | | Shock size | s | 0.05 | 0.01\u20130.20 | | Investor concentration | \u03ba | 0.75 | 0.40\u20130.98 | | Network density (bank connections per fund) | d | 2.0 | 1.0\u20135.0 | | Monte Carlo runs",
+      "suggested_id": "4-0-15-shock-size-s-0-05-0-01-0.98",
+      "in_table": true,
+      "bucket": "table_cell",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 1.0,
+      "token": "1.0",
+      "context": "ration | \u03ba | 0.75 | 0.40\u20130.98 | | Network density (bank connections per fund) | d | 2.0 | 1.0\u20135.0 | | Monte Carlo runs | \u2014 | 1,000 | \u2014 | *Table 1. Model parameters. Density is an exp",
+      "suggested_id": "ration-0-75-0-40-0-98-networ-1.0",
+      "in_table": true,
+      "bucket": "table_cell",
+      "suggested_in_artifacts": true
+    },
+    {
+      "value": 5.0,
+      "token": "5.0",
+      "context": "on | \u03ba | 0.75 | 0.40\u20130.98 | | Network density (bank connections per fund) | d | 2.0 | 1.0\u20135.0 | | Monte Carlo runs | \u2014 | 1,000 | \u2014 | *Table 1. Model parameters. Density is an expecte",
+      "suggested_id": "on-0-75-0-40-0-98-network-de-5.0",
+      "in_table": true,
+      "bucket": "table_cell",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 95.0,
+      "token": "95%",
+      "context": "liff sits and they make the cliff itself much steeper. The policy implication is that the 95% threshold is a reliable target for supervision across realistic network topologies; what",
+      "suggested_id": "liff-sits-and-they-make-the-cliff-it-95%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 15.0,
+      "token": "15%",
+      "context": "n (new in v2) Osberghaus and Schepens (2026) report a median junior tranche thickness of 15% in European SRT transactions, nearly double the paper's default \u03b4 = 0.08. We re-ran the f",
+      "suggested_id": "n-new-in-v2-osberghaus-and-schepens--15%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 68.0,
+      "token": "68%",
+      "context": "cede formal fund stress. Blue Owl fell to an all-time low of $7.95 on April 2, 2026, down 68% from its January 2025 high. Redemption requests from the 12 largest non-traded BDCs avera",
+      "suggested_id": "cede-formal-fund-stress-blue-owl-fel-68%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 5.0,
+      "token": "5%",
+      "context": "2 largest non-traded BDCs averaged 12.1% of NAV in Q1 2026 (median 10.1%), well above the 5% gating threshold (With Intelligence, April 2026). Total Q1 redemption requests reached $2",
+      "suggested_id": "2-largest-non-traded-bdcs-averaged-1-5%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 67.0,
+      "token": "67%",
+      "context": "Fitch, up from 2.0% in 2022. The Federal Reserve Bank of Boston (August 2026) documents a 67% increase in PIK usage across BDC loans since early 2022, from roughly 6% to 10%, spread a",
+      "suggested_id": "fitch-up-from-2-0-in-2022-the-federa-67%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 6.0,
+      "token": "6%",
+      "context": "26) documents a 67% increase in PIK usage across BDC loans since early 2022, from roughly 6% to 10%, spread across nearly every industry. Lincoln International data show roughly 11%",
+      "suggested_id": "26-documents-a-67-increase-in-pik-us-6%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 10.0,
+      "token": "10%",
+      "context": "cuments a 67% increase in PIK usage across BDC loans since early 2022, from roughly 6% to 10%, spread across nearly every industry. Lincoln International data show roughly 11% of valu",
+      "suggested_id": "cuments-a-67-increase-in-pik-usage-a-10%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 11.0,
+      "token": "11%",
+      "context": "y 6% to 10%, spread across nearly every industry. Lincoln International data show roughly 11% of valued loans carrying PIK interest, with more than half being \"bad PIK\" not part of or",
+      "suggested_id": "y-6-to-10-spread-across-nearly-every-11%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 6.0,
+      "token": "6%",
+      "context": "with more than half being \"bad PIK\" not part of original deal terms, amounting to roughly 6% of portfolios requiring interest-payment accommodation. An Ocorian survey (May 2026) of 3",
+      "suggested_id": "with-more-than-half-being-bad-pik-no-6%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 96.0,
+      "token": "96%",
+      "context": "accommodation. An Ocorian survey (May 2026) of 300 private capital executives found that 96% expect PIK prevalence to increase, and 90% believe growing PIK usage risks masking underl",
+      "suggested_id": "accommodation-an-ocorian-survey-may--96%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 90.0,
+      "token": "90%",
+      "context": ") of 300 private capital executives found that 96% expect PIK prevalence to increase, and 90% believe growing PIK usage risks masking underlying borrower stress. Distressed maturity e",
+      "suggested_id": "of-300-private-capital-executives-fo-90%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 69.0,
+      "token": "69%",
+      "context": "expressing views on corporate credit. Q1 2026 CDS index volume reached $4.5 trillion, up 69% year-over-year, the highest on record (Kobeissi Letter, April 2026). S&P Dow Jones launch",
+      "suggested_id": "expressing-views-on-corporate-credit-69%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 12.0,
+      "token": "12%",
+      "context": "Research, April 2026). FINDX includes 25 North American financial entities, with roughly 12% directly tied to private credit managers including Blackstone, Apollo, Ares, Carlyle, and",
+      "suggested_id": "research-april-2026-findx-includes-2-12%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 20.0,
+      "token": "20%",
+      "context": "ation effects). A supervisory expectation that no single investor hold more than, say, 15\u201320% of a bank's outstanding SRT exposure is still defensible on general prudential grounds; w",
+      "suggested_id": "ation-effects-a-supervisory-expectat-20%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 19.0,
+      "token": "19%",
+      "context": "II endgame, reversing the original 2023 proposal. The original framework sought a roughly 19% capital increase for the largest US banks. The reproposal instead delivers an estimated $",
+      "suggested_id": "ii-endgame-reversing-the-original-20-19%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 10.0,
+      "token": "10%",
+      "context": "il 2025 \"Dear CFO\" letter identified that SRT financing was associated with approximately 10% of the outstanding global SRT market (BCBS, 2026). These are market-wide aggregates; per-",
+      "suggested_id": "il-2025-dear-cfo-letter-identified-t-10%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 18.0,
+      "token": "18%",
+      "context": "y does not shift this zone, but it does scale the severity of the cascade beyond it, from 18% of the network failing at low density to 61% at high density. A network of real complexit",
+      "suggested_id": "y-does-not-shift-this-zone-but-it-do-18%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 61.0,
+      "token": "61%",
+      "context": "the severity of the cascade beyond it, from 18% of the network failing at low density to 61% at high density. A network of real complexity is likely on the high-magnitude side of tha",
+      "suggested_id": "the-severity-of-the-cascade-beyond-i-61%",
+      "in_table": false,
+      "bucket": "other",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 8.0,
+      "token": "8%",
+      "context": "size of the \"first loss\" layer in a loan pool. \u03b4 = 0.08 means the fund absorbs the first 8% of losses before the bank is affected. | | **PIK (Payment-in-Kind)** | When borrowers can",
+      "suggested_id": "size-of-the-first-loss-layer-in-a-lo-8%",
+      "in_table": true,
+      "bucket": "table_cell",
+      "suggested_in_artifacts": false
+    },
+    {
+      "value": 0.75,
+      "token": "0.75",
+      "context": "that the top 10 investors hold over 75% of outstanding exposure; that corresponds to \u03ba \u2248 0.75 in the model. | | **Network density (d)** | The expected number of banks each fund is con",
+      "suggested_id": "that-the-top-10-investors-hold-over--0.75",
+      "in_table": true,
+      "bucket": "table_cell",
+      "suggested_in_artifacts": true
+    }
+  ]
+}

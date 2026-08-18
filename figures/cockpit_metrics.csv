@@ -1,0 +1,7 @@
+rank,metric,current_value_q1_2026,signal,lambda_trigger,lead_fraction,source
+1,Secondary market pricing of private credit stakes,Multiple platforms gating at 5% cap; Blue Owl all-time low,RED,0.588,0.381,Setter Capital; public BDC prices (Apr 2026)
+2,BDC price dispersion,Extreme: Blue Owl -68% YTD; FSK/GSBD dividend cuts; $20.8B redemption requests Q1,RED,0.602,0.366,NYSE prices; KBRA/Fitch; Woozle Research (Apr 2026)
+3,PIK ratio in BDC filings (bad PIK),6.4% of total private debt volume (KBRA/Fitch Q1 2026),RED,0.616,0.352,KBRA; Fitch Ratings; SEC EDGAR 10-Q filings
+4,CLO BB minus AAA spread,~470-615 bps (US BB 600-750 bps; AAA ~130 bps over SOFR),AMBER/RED,0.63,0.337,TwentyFour AM (Mar 2026); PitchBook CLO Outlook
+5,CDS index volume (CDX IG/HY),"$4.5T Q1 2026, +69% YoY, all-time record. New S&P CDX Financials (FINDX) launched Apr 13 2026.",RED,0.672,0.293,ISDA/DTCC; Seeking Alpha; Traders Magazine (Apr 2026)
+6,SOFR-OIS spread,~10-15 bps; interbank stress not yet acute,GREEN,0.756,0.204,FRED SOFR series; NY Fed (Apr 2026)

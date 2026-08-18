@@ -1,0 +1,200 @@
+{
+  "schema": "cd-manuscript-integrity/v1",
+  "manuscript": "dyb-2026k-circular-nw-risk-v2.md",
+  "i1_policy": "strict",
+  "results": [
+    "results/publication_sweep_summary.json",
+    "results/model_parameters.json",
+    "results/srt_claim_verify.json"
+  ],
+  "claimed_numbers": [
+    {
+      "id": "lambda-star-percent",
+      "value": 95,
+      "source_path": "results/publication_sweep_summary.json",
+      "source_key": "lambda_star_percent"
+    },
+    {
+      "id": "density-d1-cascade-percent",
+      "value": 18,
+      "source_path": "results/publication_sweep_summary.json",
+      "source_key": "density_d1_cascade_percent"
+    },
+    {
+      "id": "density-d5-cascade-percent",
+      "value": 61,
+      "source_path": "results/publication_sweep_summary.json",
+      "source_key": "density_d5_cascade_percent"
+    },
+    {
+      "id": "table1-lambda-hi",
+      "value": 1.0,
+      "source_path": "results/model_parameters.json",
+      "source_key": "lambda_range_hi"
+    },
+    {
+      "id": "table1-delta-lo",
+      "value": 0.04,
+      "source_path": "results/model_parameters.json",
+      "source_key": "tranche_thickness_range_lo"
+    },
+    {
+      "id": "table1-delta-hi",
+      "value": 0.15,
+      "source_path": "results/model_parameters.json",
+      "source_key": "tranche_thickness_range_hi"
+    },
+    {
+      "id": "table1-shock-lo",
+      "value": 0.01,
+      "source_path": "results/model_parameters.json",
+      "source_key": "shock_size_range_lo"
+    },
+    {
+      "id": "table1-shock-hi",
+      "value": 0.2,
+      "source_path": "results/model_parameters.json",
+      "source_key": "shock_size_range_hi"
+    },
+    {
+      "id": "table1-kappa-lo",
+      "value": 0.4,
+      "source_path": "results/model_parameters.json",
+      "source_key": "kappa_range_lo"
+    },
+    {
+      "id": "table1-kappa-hi",
+      "value": 0.98,
+      "source_path": "results/model_parameters.json",
+      "source_key": "kappa_range_hi"
+    },
+    {
+      "id": "table1-density-hi",
+      "value": 5.0,
+      "source_path": "results/model_parameters.json",
+      "source_key": "density_range_hi"
+    },
+    {
+      "id": "table1-kappa-default",
+      "value": 0.75,
+      "source_path": "results/model_parameters.json",
+      "source_key": "kappa"
+    },
+    {
+      "id": "bank-distress-threshold-percent",
+      "value": 20,
+      "source_path": "results/model_parameters.json",
+      "source_key": "bank_distress_threshold_percent"
+    },
+    {
+      "id": "osberghaus-monitor-35pct",
+      "value": 35,
+      "source": "empirical-coding"
+    },
+    {
+      "id": "osberghaus-monitor-13pct",
+      "value": 13,
+      "source": "empirical-coding"
+    },
+    {
+      "id": "osberghaus-monitor-25pct",
+      "value": 25,
+      "source": "empirical-coding"
+    },
+    {
+      "id": "osberghaus-interconnect-66pct",
+      "value": 66,
+      "source": "empirical-coding"
+    },
+    {
+      "id": "osberghaus-self-fund-26pct",
+      "value": 26,
+      "source": "empirical-coding"
+    },
+    {
+      "id": "osberghaus-tranche-15pct",
+      "value": 15,
+      "source": "empirical-coding"
+    },
+    {
+      "id": "osberghaus-transfer-prob-70pct",
+      "value": 70,
+      "source": "empirical-coding"
+    },
+    {
+      "id": "bis-top10-75pct",
+      "value": 75,
+      "source": "empirical-coding"
+    },
+    {
+      "id": "bis-na-issuance-400pct",
+      "value": 400,
+      "source": "empirical-coding"
+    },
+    {
+      "id": "cited-10pct-portfolio-pik-bcbs",
+      "value": 10,
+      "source": "empirical-coding"
+    },
+    {
+      "id": "descriptive-senior-80pct",
+      "value": 80,
+      "source": "empirical-coding"
+    },
+    {
+      "id": "descriptive-first-loss-8pct",
+      "value": 8,
+      "source": "empirical-coding"
+    },
+    {
+      "id": "descriptive-premium-lincoln-11pct",
+      "value": 11,
+      "source": "empirical-coding"
+    },
+    {
+      "id": "cockpit-blue-owl-68pct",
+      "value": 68,
+      "source": "empirical-coding"
+    },
+    {
+      "id": "cockpit-gating-5pct",
+      "value": 5,
+      "source": "empirical-coding"
+    },
+    {
+      "id": "boston-fed-pik-67pct",
+      "value": 67,
+      "source": "empirical-coding"
+    },
+    {
+      "id": "pik-6pct",
+      "value": 6,
+      "source": "empirical-coding"
+    },
+    {
+      "id": "ocorian-96pct",
+      "value": 96,
+      "source": "empirical-coding"
+    },
+    {
+      "id": "ocorian-90pct",
+      "value": 90,
+      "source": "empirical-coding"
+    },
+    {
+      "id": "cds-volume-69pct",
+      "value": 69,
+      "source": "empirical-coding"
+    },
+    {
+      "id": "findx-12pct",
+      "value": 12,
+      "source": "empirical-coding"
+    },
+    {
+      "id": "basel-reproposal-19pct",
+      "value": 19,
+      "source": "empirical-coding"
+    }
+  ]
+}

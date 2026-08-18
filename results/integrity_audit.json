@@ -1,0 +1,421 @@
+{
+  "schema": "cd-manuscript-integrity/v1",
+  "ok": true,
+  "status_line": "circular-networks-SRT-networks \u2014 limited (I1 limited; I3 pass (6 resolved, 0 unresolved))",
+  "unbound_result_claims": [],
+  "unbound_buckets": {},
+  "status": "limited",
+  "project": "circular-networks-SRT-networks",
+  "manuscript": "dyb-2026k-circular-nw-risk-v2.md",
+  "bibliography": null,
+  "manifest": "integrity-manifest.json",
+  "companions": [],
+  "online": true,
+  "timestamp_utc": "2026-08-18T08:14:44Z",
+  "citations": [
+    {
+      "kind": "doi",
+      "token": "10.1016/j.physa.2013.04.012",
+      "needs_bib_key": false,
+      "identifier": "10.1016/j.physa.2013.04.012"
+    },
+    {
+      "kind": "doi",
+      "token": "10.5089/9798229027748.001",
+      "needs_bib_key": false,
+      "identifier": "10.5089/9798229027748.001"
+    },
+    {
+      "kind": "doi",
+      "token": "10.5089/9798229039208.001",
+      "needs_bib_key": false,
+      "identifier": "10.5089/9798229039208.001"
+    },
+    {
+      "kind": "doi",
+      "token": "10.1515/9781400829552",
+      "needs_bib_key": false,
+      "identifier": "10.1515/9781400829552"
+    },
+    {
+      "kind": "doi",
+      "token": "10.1140/epjst/e2012-01559-5",
+      "needs_bib_key": false,
+      "identifier": "10.1140/epjst/e2012-01559-5"
+    },
+    {
+      "kind": "doi",
+      "token": "10.1140/epjb/e2015-50019-9",
+      "needs_bib_key": false,
+      "identifier": "10.1140/epjb/e2015-50019-9"
+    },
+    {
+      "kind": "author_year",
+      "token": "April 2026",
+      "needs_bib_key": false,
+      "identifier": null
+    },
+    {
+      "kind": "author_year",
+      "token": "Osberghaus and Schepens 2026",
+      "needs_bib_key": false,
+      "identifier": null
+    },
+    {
+      "kind": "author_year",
+      "token": "March 2026",
+      "needs_bib_key": false,
+      "identifier": null
+    },
+    {
+      "kind": "author_year",
+      "token": "May 2026",
+      "needs_bib_key": false,
+      "identifier": null
+    },
+    {
+      "kind": "author_year",
+      "token": "Taleb 2007",
+      "needs_bib_key": false,
+      "identifier": null
+    },
+    {
+      "kind": "author_year",
+      "token": "Sornette and Ouillon 2012",
+      "needs_bib_key": false,
+      "identifier": null
+    },
+    {
+      "kind": "author_year",
+      "token": "Wosnitza and Sornette 2015",
+      "needs_bib_key": false,
+      "identifier": null
+    },
+    {
+      "kind": "author_year",
+      "token": "August 2026",
+      "needs_bib_key": false,
+      "identifier": null
+    },
+    {
+      "kind": "author_year",
+      "token": "Machado 2026",
+      "needs_bib_key": false,
+      "identifier": null
+    },
+    {
+      "kind": "author_year",
+      "token": "BCBS 2026",
+      "needs_bib_key": false,
+      "identifier": null
+    },
+    {
+      "kind": "author_year",
+      "token": "Schepens 2026",
+      "needs_bib_key": false,
+      "identifier": null
+    },
+    {
+      "kind": "author_year",
+      "token": "BIS 2026",
+      "needs_bib_key": false,
+      "identifier": null
+    },
+    {
+      "kind": "author_year",
+      "token": "IMF 2025",
+      "needs_bib_key": false,
+      "identifier": null
+    },
+    {
+      "kind": "author_year",
+      "token": "FSB 2026",
+      "needs_bib_key": false,
+      "identifier": null
+    }
+  ],
+  "result_claim_count": 56,
+  "bib_keys": [],
+  "numbered_refs": [],
+  "checks": {
+    "I1": "limited",
+    "I2": "limited",
+    "I3": "pass",
+    "I4": "limited",
+    "I5": "warn"
+  },
+  "findings": [
+    {
+      "check": "I3",
+      "severity": "warn",
+      "code": "author_year_unindexed",
+      "detail": "April 2026 not matched in References/.bib (inline Chokmah cite; not a fail)"
+    },
+    {
+      "check": "I3",
+      "severity": "warn",
+      "code": "author_year_unindexed",
+      "detail": "Osberghaus and Schepens 2026 not matched in References/.bib (inline Chokmah cite; not a fail)"
+    },
+    {
+      "check": "I3",
+      "severity": "warn",
+      "code": "author_year_unindexed",
+      "detail": "March 2026 not matched in References/.bib (inline Chokmah cite; not a fail)"
+    },
+    {
+      "check": "I3",
+      "severity": "warn",
+      "code": "author_year_unindexed",
+      "detail": "May 2026 not matched in References/.bib (inline Chokmah cite; not a fail)"
+    },
+    {
+      "check": "I3",
+      "severity": "warn",
+      "code": "author_year_unindexed",
+      "detail": "Taleb 2007 not matched in References/.bib (inline Chokmah cite; not a fail)"
+    },
+    {
+      "check": "I3",
+      "severity": "warn",
+      "code": "author_year_unindexed",
+      "detail": "Sornette and Ouillon 2012 not matched in References/.bib (inline Chokmah cite; not a fail)"
+    },
+    {
+      "check": "I3",
+      "severity": "warn",
+      "code": "author_year_unindexed",
+      "detail": "Wosnitza and Sornette 2015 not matched in References/.bib (inline Chokmah cite; not a fail)"
+    },
+    {
+      "check": "I3",
+      "severity": "warn",
+      "code": "author_year_unindexed",
+      "detail": "August 2026 not matched in References/.bib (inline Chokmah cite; not a fail)"
+    },
+    {
+      "check": "I3",
+      "severity": "warn",
+      "code": "author_year_unindexed",
+      "detail": "Machado 2026 not matched in References/.bib (inline Chokmah cite; not a fail)"
+    },
+    {
+      "check": "I3",
+      "severity": "warn",
+      "code": "author_year_unindexed",
+      "detail": "BCBS 2026 not matched in References/.bib (inline Chokmah cite; not a fail)"
+    },
+    {
+      "check": "I3",
+      "severity": "warn",
+      "code": "author_year_unindexed",
+      "detail": "Schepens 2026 not matched in References/.bib (inline Chokmah cite; not a fail)"
+    },
+    {
+      "check": "I3",
+      "severity": "warn",
+      "code": "author_year_unindexed",
+      "detail": "BIS 2026 not matched in References/.bib (inline Chokmah cite; not a fail)"
+    },
+    {
+      "check": "I3",
+      "severity": "warn",
+      "code": "author_year_unindexed",
+      "detail": "IMF 2025 not matched in References/.bib (inline Chokmah cite; not a fail)"
+    },
+    {
+      "check": "I3",
+      "severity": "warn",
+      "code": "author_year_unindexed",
+      "detail": "FSB 2026 not matched in References/.bib (inline Chokmah cite; not a fail)"
+    },
+    {
+      "check": "I3",
+      "severity": "info",
+      "code": "resolved",
+      "detail": "10.1016/j.physa.2013.04.012 via crossref-doi"
+    },
+    {
+      "check": "I3",
+      "severity": "info",
+      "code": "resolved",
+      "detail": "10.5089/9798229027748.001 via crossref-doi"
+    },
+    {
+      "check": "I3",
+      "severity": "info",
+      "code": "resolved",
+      "detail": "10.5089/9798229039208.001 via crossref-doi"
+    },
+    {
+      "check": "I3",
+      "severity": "info",
+      "code": "resolved",
+      "detail": "10.1515/9781400829552 via crossref-doi"
+    },
+    {
+      "check": "I3",
+      "severity": "info",
+      "code": "resolved",
+      "detail": "10.1140/epjst/e2012-01559-5 via crossref-doi"
+    },
+    {
+      "check": "I3",
+      "severity": "info",
+      "code": "resolved",
+      "detail": "10.1140/epjb/e2015-50019-9 via crossref-doi"
+    },
+    {
+      "check": "I1",
+      "severity": "limited",
+      "code": "empirical_unbound_artifact",
+      "detail": "osberghaus-monitor-35pct=35.0 is empirical-coding; no file to re-read"
+    },
+    {
+      "check": "I1",
+      "severity": "limited",
+      "code": "empirical_unbound_artifact",
+      "detail": "osberghaus-monitor-13pct=13.0 is empirical-coding; no file to re-read"
+    },
+    {
+      "check": "I1",
+      "severity": "limited",
+      "code": "empirical_unbound_artifact",
+      "detail": "osberghaus-monitor-25pct=25.0 is empirical-coding; no file to re-read"
+    },
+    {
+      "check": "I1",
+      "severity": "limited",
+      "code": "empirical_unbound_artifact",
+      "detail": "osberghaus-interconnect-66pct=66.0 is empirical-coding; no file to re-read"
+    },
+    {
+      "check": "I1",
+      "severity": "limited",
+      "code": "empirical_unbound_artifact",
+      "detail": "osberghaus-self-fund-26pct=26.0 is empirical-coding; no file to re-read"
+    },
+    {
+      "check": "I1",
+      "severity": "limited",
+      "code": "empirical_unbound_artifact",
+      "detail": "osberghaus-tranche-15pct=15.0 is empirical-coding; no file to re-read"
+    },
+    {
+      "check": "I1",
+      "severity": "limited",
+      "code": "empirical_unbound_artifact",
+      "detail": "osberghaus-transfer-prob-70pct=70.0 is empirical-coding; no file to re-read"
+    },
+    {
+      "check": "I1",
+      "severity": "limited",
+      "code": "empirical_unbound_artifact",
+      "detail": "bis-top10-75pct=75.0 is empirical-coding; no file to re-read"
+    },
+    {
+      "check": "I1",
+      "severity": "limited",
+      "code": "empirical_unbound_artifact",
+      "detail": "bis-na-issuance-400pct=400.0 is empirical-coding; no file to re-read"
+    },
+    {
+      "check": "I1",
+      "severity": "limited",
+      "code": "empirical_unbound_artifact",
+      "detail": "cited-10pct-portfolio-pik-bcbs=10.0 is empirical-coding; no file to re-read"
+    },
+    {
+      "check": "I1",
+      "severity": "limited",
+      "code": "empirical_unbound_artifact",
+      "detail": "descriptive-senior-80pct=80.0 is empirical-coding; no file to re-read"
+    },
+    {
+      "check": "I1",
+      "severity": "limited",
+      "code": "empirical_unbound_artifact",
+      "detail": "descriptive-first-loss-8pct=8.0 is empirical-coding; no file to re-read"
+    },
+    {
+      "check": "I1",
+      "severity": "limited",
+      "code": "empirical_unbound_artifact",
+      "detail": "descriptive-premium-lincoln-11pct=11.0 is empirical-coding; no file to re-read"
+    },
+    {
+      "check": "I1",
+      "severity": "limited",
+      "code": "empirical_unbound_artifact",
+      "detail": "cockpit-blue-owl-68pct=68.0 is empirical-coding; no file to re-read"
+    },
+    {
+      "check": "I1",
+      "severity": "limited",
+      "code": "empirical_unbound_artifact",
+      "detail": "cockpit-gating-5pct=5.0 is empirical-coding; no file to re-read"
+    },
+    {
+      "check": "I1",
+      "severity": "limited",
+      "code": "empirical_unbound_artifact",
+      "detail": "boston-fed-pik-67pct=67.0 is empirical-coding; no file to re-read"
+    },
+    {
+      "check": "I1",
+      "severity": "limited",
+      "code": "empirical_unbound_artifact",
+      "detail": "pik-6pct=6.0 is empirical-coding; no file to re-read"
+    },
+    {
+      "check": "I1",
+      "severity": "limited",
+      "code": "empirical_unbound_artifact",
+      "detail": "ocorian-96pct=96.0 is empirical-coding; no file to re-read"
+    },
+    {
+      "check": "I1",
+      "severity": "limited",
+      "code": "empirical_unbound_artifact",
+      "detail": "ocorian-90pct=90.0 is empirical-coding; no file to re-read"
+    },
+    {
+      "check": "I1",
+      "severity": "limited",
+      "code": "empirical_unbound_artifact",
+      "detail": "cds-volume-69pct=69.0 is empirical-coding; no file to re-read"
+    },
+    {
+      "check": "I1",
+      "severity": "limited",
+      "code": "empirical_unbound_artifact",
+      "detail": "findx-12pct=12.0 is empirical-coding; no file to re-read"
+    },
+    {
+      "check": "I1",
+      "severity": "limited",
+      "code": "empirical_unbound_artifact",
+      "detail": "basel-reproposal-19pct=19.0 is empirical-coding; no file to re-read"
+    },
+    {
+      "check": "I2",
+      "severity": "limited",
+      "code": "protocol_needs_judgment",
+      "detail": "proof/verify language present; auditor must confirm the matching gate"
+    },
+    {
+      "check": "I4",
+      "severity": "limited",
+      "code": "named_artifacts_present",
+      "detail": "named files exist: ['srt_simulation.py', 'figures/cockpit_metrics.csv']; auditor still judges algorithm class"
+    },
+    {
+      "check": "I5",
+      "severity": "warn",
+      "code": "overclaim_lexicon",
+      "detail": "flagged phrasing (not a fail): ['First', 'first']"
+    }
+  ],
+  "errors": [],
+  "evidence": "results/integrity_audit.json"
+}

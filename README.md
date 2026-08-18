@@ -1,10 +1,12 @@
 # Circular Leverage in Bank-NBFI SRT Networks
 
-**Preprint:** [https://zenodo.org/records/19632278](https://doi.org/10.5281/zenodo.19632278)
+**Preprint (always latest):** [https://doi.org/10.5281/zenodo.19632277](https://doi.org/10.5281/zenodo.19632277)
 
-**License:** MIT (code) · CC BY 4.0 (paper)  
+**v1 pin:** [10.5281/zenodo.19632278](https://doi.org/10.5281/zenodo.19632278) · **v2 pin:** [10.5281/zenodo.21995468](https://doi.org/10.5281/zenodo.21995468)
 
-**Status:** Preprint, April 2026
+**License:** MIT (code) · CC BY 4.0 (paper)
+
+**Status:** Preprint v2, 17 August 2026 (v1: 17 April 2026)
 
 **Claim gate:** `python verify_srt_claims.py` — thin re-run of load-bearing phase-transition claims (~10s). Last verified 2026-08-18 (`status=pass`). See [Quickstart](#quickstart), [Computational claim gate](#computational-claim-gate-thin-mc), and [CHANGELOG.md](CHANGELOG.md).
 
@@ -16,7 +18,7 @@ Synthetic Risk Transfers let banks offload credit risk to private funds while ke
 
 We build a directed network model of bank-NBFI SRT relationships and simulate contagion cascades across 1,000 random network realizations per λ value. Main result: cascade risk is not linear in λ. It shows a two-stage transition, first departing from baseline at λ_onset ≈ 0.85–0.95, then jumping sharply at λ* ≈ 0.95. The transition *location* is invariant across network density, investor concentration, shock size, and tranche thickness. What density does control is cascade *magnitude* beyond the threshold, from 0.18 at low density to 0.61 at high density.
 
-We also propose six publicly observable proxy metrics, no Bloomberg required, ranked by sensitivity-weighted ordinal position relative to λ*. As of Q1 2026, four of six are red.
+We also propose six publicly observable proxy metrics, no Bloomberg required, ranked by sensitivity-weighted ordinal position relative to λ*. As of Q2/Q3 2026, five of six are red (up from four in Q1). SOFR-OIS remains green.
 
 ---
 
@@ -45,7 +47,8 @@ Simulation outputs land in `figures/`:
 - `fig3_sensitivity.pdf` — investor concentration sensitivity
 - `fig4_lppls_illustration.pdf` — synthetic LPPLS motivating figure (labeled synthetic)
 - `fig5_density_sensitivity.pdf` — network density sensitivity (new)
-- `cockpit_metrics.csv` — six proxy metrics with Q1 2026 readings
+- `fig6_tranche_comparison.pdf` — δ = 0.08 vs empirical median δ = 0.15
+- `cockpit_metrics.csv` — six proxy metrics (Q1 snapshot in the CSV; paper Table 2 is Q2/Q3)
 
 ---
 
@@ -70,7 +73,11 @@ verify_srt_claims.py      # computational claim gate (thin MC)
 claim-manifest.json       # claim-gate manifest (cd-claim-gate/v1)
 results/                  # gate evidence + claim-holds brief
 figures/                  # generated figures / cockpit CSV
-dyb-2026k-circular-nw-risk-v1.md   # paper (Markdown source)
+dyb-2026k-circular-nw-risk-v2.md   # paper (Markdown source)
+dyb-2026k-circular-nw-risk-v2.pdf  # export for Zenodo
+dyb-2026k-circular-nw-risk-v1.md   # v1 source (superseded)
+ZENODO.md                         # concept vs version DOIs + mint packet
+integrity-manifest.json
 README.md
 CHANGELOG.md
 LICENSE
@@ -157,7 +164,7 @@ See `CITATION.cff` or use the Zenodo DOI. BibTeX:
   author  = {Bilar, Daniyel Yaacov},
   year    = {2026},
   journal = {Zenodo preprint},
-  doi     = {10.5281/zenodo.19632278}
+  doi     = {10.5281/zenodo.19632277}
 }
 ```
 

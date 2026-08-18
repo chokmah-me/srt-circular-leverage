@@ -2,6 +2,13 @@
 
 All notable changes to this companion repository are documented here.
 
+## [2.0] — 2026-08-18 — paper v2
+
+- Paper v2 (`dyb-2026k-circular-nw-risk-v2.md` / `.pdf`): Osberghaus and Schepens (2026) calibration, Figure 6 (δ = 0.15 vs 0.08), cockpit through Q2/Q3 2026, Tufte restyle of Figures 1–5
+- Citation repairs: BIS/BCBS wording, Wosnitza and Sornette (2015), IMF (2025) for the 75% top-10 figure, Osberghaus monitoring and stock-date wording
+- Release surfaces: `ZENODO.md`; `CITATION.cff` (concept `10.5281/zenodo.19632277`; v2 `10.5281/zenodo.21995468`)
+- Thin claim gate still green (seed 42, n_runs=80): λ_onset=0.90, λ*=0.95, μ(1)/μ(0)=3.68
+
 ## [Unreleased] — 2026-08-18 — claim-gate re-verify
 
 - Re-ran `srt-phase-transition` via `verify_claim_project.py`: **pass** (seed 42, n_runs=80, 6.4s)

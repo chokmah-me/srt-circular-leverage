@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from scipy.stats import powerlaw
 from collections import defaultdict
-import csv, os
+import csv, json, os
 
 # ---------------------------------------------------------------------------
 # Global RNG — set seed here for reproducibility; pass rng= to override
@@ -488,6 +488,18 @@ def sweep_density_sensitivity(
 # SECTION 4: Plots (Tufte style)
 # ---------------------------------------------------------------------------
 
+# Colorblind-safe (Okabe–Ito). Pair with linestyles so prints survive grayscale.
+C_BLUE   = '#0072B2'
+C_VERM   = '#D55E00'
+C_GRAY   = '#666666'
+C_GREEN  = '#009E73'
+C_ORANGE = '#E69F00'
+C_SKY    = '#56B4E9'
+C_INK    = '#222222'
+
+_REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+
 def _tufte_ax(ax):
     """Strip to bare minimum: bottom + left spines only, no top/right."""
     ax.spines['top'].set_visible(False)
@@ -497,6 +509,26 @@ def _tufte_ax(ax):
     ax.tick_params(length=3, width=0.6, labelsize=8)
     ax.yaxis.set_ticks_position('left')
     ax.xaxis.set_ticks_position('bottom')
+
+
+def _n_runs(sweep_result: dict) -> int:
+    cascades = sweep_result.get('all_cascades')
+    if cascades is None or len(cascades) == 0:
+        return 0
+    return int(len(cascades[0]))
+
+
+def _save_fig(fig, stem: str, out_dir: str) -> str:
+    """Save PDF + PNG at 300 dpi. Sync PNG to repo root when writing to figures/."""
+    os.makedirs(out_dir, exist_ok=True)
+    pdf_path = os.path.join(out_dir, f'{stem}.pdf')
+    png_path = os.path.join(out_dir, f'{stem}.png')
+    fig.savefig(pdf_path, dpi=300, bbox_inches='tight')
+    fig.savefig(png_path, dpi=300, bbox_inches='tight')
+    if os.path.basename(os.path.normpath(out_dir)) == 'figures':
+        fig.savefig(os.path.join(_REPO_ROOT, f'{stem}.png'), dpi=300,
+                    bbox_inches='tight')
+    return pdf_path
 
 
 def _find_lambda_star(lambda_grid, mean_cascade):
@@ -525,121 +557,123 @@ def _find_lambda_onset(lambda_grid, mean_cascade, std_cascade, k: float = 2.0):
 def plot_phase_transition(sweep_result: dict, out_dir: str = 'figures') -> str:
     """
     Figure 1: Phase transition — mean cascade size ± 1 SD vs λ.
-    Annotates λ*, baseline cascade level, and the DK / stable regime zones.
+    Marks the two-stage threshold (λ_onset, λ*) and the λ=0 / λ=1 levels.
     """
-    os.makedirs(out_dir, exist_ok=True)
-    lam  = sweep_result['lambda_grid']
-    mu   = sweep_result['mean_cascade']
-    sd   = sweep_result['std_cascade']
+    lam   = sweep_result['lambda_grid']
+    mu    = sweep_result['mean_cascade']
+    sd    = sweep_result['std_cascade']
     lstar = _find_lambda_star(lam, mu)
+    lonset = _find_lambda_onset(lam, mu, sd, k=2.0)
+    n     = _n_runs(sweep_result)
 
-    fig, ax = plt.subplots(figsize=(5.5, 3.5))
+    fig, ax = plt.subplots(figsize=(5.5, 3.4))
     _tufte_ax(ax)
 
-    # SD band
-    ax.fill_between(lam, mu - sd, mu + sd, color='#4878CF', alpha=0.12, linewidth=0)
-    # Mean line
-    ax.plot(lam, mu, color='#4878CF', linewidth=1.4, solid_capstyle='round')
-    # Baseline (λ=0 level) — thin reference
-    ax.axhline(mu[0], color='#888888', linewidth=0.5, linestyle='--', zorder=0)
+    ax.fill_between(lam, np.clip(mu - sd, 0, None), mu + sd,
+                    color=C_BLUE, alpha=0.12, linewidth=0, zorder=1)
+    ax.plot(lam, mu, color=C_BLUE, linewidth=1.4, solid_capstyle='round', zorder=2)
+    ax.axhline(mu[0], color=C_GRAY, linewidth=0.5, linestyle='--', zorder=0)
 
-    # λ* annotation
-    ax.axvline(lstar, color='#C44E52', linewidth=0.8, linestyle=':', zorder=1)
-    ax.text(lstar + 0.01, ax.get_ylim()[0] + (mu.max() - mu.min()) * 0.05,
-            f'λ* ≈ {lstar:.2f}', color='#C44E52', fontsize=7.5,
-            va='bottom', ha='left')
+    # Transition window [λ_onset, λ*] — the two-stage claim
+    ax.axvspan(lonset, lstar, color='#999999', alpha=0.10, linewidth=0, zorder=0)
+    ax.axvline(lonset, color=C_GRAY, linewidth=0.6, linestyle=':', zorder=1)
+    ax.axvline(lstar,  color=C_VERM, linewidth=0.7, linestyle=':', zorder=1)
 
-    # Zone labels — placed in data whitespace
-    ymid = mu.min() + (mu.max() - mu.min()) * 0.85
-    ax.text(lstar * 0.45, ymid, 'stable regime', fontsize=7,
-            color='#555555', ha='center', style='italic')
-    ax.text(lstar + (1.0 - lstar) * 0.45, ymid, 'Dragon King regime',
-            fontsize=7, color='#C44E52', ha='center', style='italic')
+    y_lo = 0.012
+    ax.text(lonset - 0.025, y_lo, f'λ_onset ≈ {lonset:.2f}',
+            color=C_GRAY, fontsize=7, va='bottom', ha='right')
+    ax.text(min(lstar + 0.02, 0.995), y_lo, f'λ* ≈ {lstar:.2f}',
+            color=C_VERM, fontsize=7, va='bottom', ha='left')
+
+    # Direct-label the two levels the text compares (≈3×)
+    ax.text(0.012, mu[0] + 0.008, f'{mu[0]:.2f}',
+            color=C_BLUE, fontsize=7, va='bottom', ha='left')
+    ax.annotate(f'{mu[-1]:.2f}', xy=(1.0, mu[-1]),
+                xytext=(-3, 5), textcoords='offset points',
+                color=C_BLUE, fontsize=7, ha='right', va='bottom')
 
     ax.set_xlabel('self-funding fraction λ', fontsize=9, labelpad=6)
     ax.set_ylabel('mean cascade size\n(fraction of network)', fontsize=9, labelpad=6)
     ax.set_xlim(0, 1)
-    ax.set_ylim(bottom=0)
+    ax.set_ylim(0, max((mu + sd).max() * 1.04, mu.max() + 0.04))
+    ax.spines['left'].set_bounds(0, mu.max())
+    ax.spines['bottom'].set_bounds(0, 1)
 
-    # Tufte-style range frame: shrink spines to data range
-    ax.spines['left'].set_bounds(mu.min(), mu.max())
-    ax.spines['bottom'].set_bounds(lam.min(), lam.max())
-
-    fig.text(0.13, 0.01,
-             'Shaded band: ±1 SD across Monte Carlo runs. '
-             'Dashed: baseline cascade at λ=0.',
+    fig.text(0.12, -0.01,
+             f'n = {n} Monte Carlo runs per λ.  '
+             'Default network: 10 banks, 20 funds, κ = 0.75, d = 2, δ = 0.08.  '
+             'Band: ±1 SD.  Dashed: λ = 0 baseline.  Grey window: [λ_onset, λ*].',
              fontsize=6.5, color='#777777')
 
-    plt.tight_layout(rect=[0, 0.04, 1, 1])
-    path = os.path.join(out_dir, 'fig1_phase_transition.pdf')
-    fig.savefig(path, dpi=150, bbox_inches='tight')
-    png_path = path.replace('.pdf', '.png')
-    fig.savefig(png_path, dpi=150, bbox_inches='tight')
+    plt.tight_layout(rect=[0, 0.05, 1, 1])
+    path = _save_fig(fig, 'fig1_phase_transition', out_dir)
     plt.close(fig)
     return path
 
 
 def plot_cascade_distributions(sweep_result: dict, out_dir: str = 'figures') -> str:
     """
-    Figure 2: Cascade size distributions at λ_low, λ_mid, λ_high.
-    Three small multiples on one row. Rug plot below each histogram.
-    Shows power-law tail (low λ) vs Dragon King outlier mass (high λ).
+    Figure 2: Cascade-size distributions at λ_low, λ_mid, λ_high.
+    Shared x-scale so Dragon King mass is visibly beyond the stable-regime support.
     """
-    os.makedirs(out_dir, exist_ok=True)
     lam_grid = sweep_result['lambda_grid']
     cascades = sweep_result['all_cascades']
+    n_mc = _n_runs(sweep_result)
 
-    # Pick three representative λ values
     n = len(lam_grid)
-    idx_low  = 2
-    idx_mid  = n // 2
-    idx_high = n - 1
     picks = [
-        (idx_low,  lam_grid[idx_low],  cascades[idx_low]),
-        (idx_mid,  lam_grid[idx_mid],  cascades[idx_mid]),
-        (idx_high, lam_grid[idx_high], cascades[idx_high]),
+        (lam_grid[2],       cascades[2],       'stable',      C_GRAY),
+        (lam_grid[n // 2],  cascades[n // 2],  '',            C_GRAY),
+        (lam_grid[n - 1],   cascades[n - 1],   'Dragon King', C_VERM),
     ]
 
-    fig, axes = plt.subplots(1, 3, figsize=(7.5, 3.0),
-                             sharey=False, sharex=False)
-    colors = ['#4878CF', '#6ACC65', '#C44E52']
+    xmax = max(float(data.max()) for _, data, _, _ in picks)
+    xmax = max(xmax, 0.05)
+    bin_edges = np.linspace(0, xmax, 31)
+    p95_stable = float(np.percentile(picks[0][1], 95))
 
-    for ax, (_, lv, data), col in zip(axes, picks, colors):
+    fig, axes = plt.subplots(1, 3, figsize=(7.4, 2.9), sharex=True, sharey=True)
+
+    hist_counts = []
+    for ax, (lv, data, tag, col) in zip(axes, picks):
         _tufte_ax(ax)
-        ax.spines['left'].set_visible(False)
-        ax.yaxis.set_visible(False)
+        counts, _, _ = ax.hist(data, bins=bin_edges, color=col, alpha=0.82,
+                               linewidth=0)
+        hist_counts.append(counts)
+        med = float(np.median(data))
+        ax.axvline(p95_stable, color='#bbbbbb', linewidth=0.6, linestyle=':',
+                   zorder=1)
+        ax.axvline(med, color=col, linewidth=0.8, linestyle='--', zorder=2)
+        title = f'λ = {lv:.2f}'
+        if tag:
+            title += f'  ({tag})'
+        title += f'\nmedian {med:.2f}'
+        ax.set_title(title, fontsize=9, pad=4, fontweight='normal',
+                     color=C_VERM if tag == 'Dragon King' else C_INK)
+        ax.set_xlim(0, xmax)
+        ax.spines['bottom'].set_bounds(0, xmax)
 
-        bins = np.linspace(0, max(data.max(), 0.01), 30)
-        ax.hist(data, bins=bins, color=col, alpha=0.75, linewidth=0,
-                density=True)
+    ymax = max(c.max() for c in hist_counts) if hist_counts else 1.0
+    rug_y = -0.06 * ymax
+    for ax, (_, data, _, col) in zip(axes, picks):
+        ax.plot(data, np.full_like(data, rug_y, dtype=float),
+                '|', color=col, alpha=0.22, markersize=3, markeredgewidth=0.4)
 
-        # Rug
-        ax.plot(data, np.full_like(data, -0.4),
-                '|', color=col, alpha=0.25, markersize=3, markeredgewidth=0.4)
+    for ax in axes:
+        ax.set_ylim(rug_y * 1.8, ymax * 1.08)
+        ax.spines['left'].set_bounds(0, ymax)
 
-        # Median line
-        med = np.median(data)
-        ax.axvline(med, color=col, linewidth=0.8, linestyle='--', alpha=0.7)
+    axes[0].set_ylabel('Monte Carlo count', fontsize=8, labelpad=4)
+    axes[1].set_xlabel('cascade size (fraction of network)', fontsize=8, labelpad=4)
 
-        ax.set_xlabel('cascade size', fontsize=8, labelpad=4)
-        ax.set_title(f'λ = {lv:.2f}', fontsize=9, pad=4, fontweight='normal')
-        ax.set_xlim(left=0)
-        ax.spines['bottom'].set_bounds(0, data.max())
-
-    axes[0].set_title(axes[0].get_title() + '\n(stable)', fontsize=9,
-                      pad=4, fontweight='normal')
-    axes[2].set_title(axes[2].get_title() + '\n(Dragon King)', fontsize=9,
-                      pad=4, color='#C44E52', fontweight='normal')
-
-    fig.text(0.5, 0.01,
-             'Dashed line: median. Rug: individual Monte Carlo outcomes.',
+    fig.text(0.5, -0.02,
+             f'Shared scale.  Dotted: 95th percentile of the λ = {picks[0][0]:.2f} '
+             f'distribution.  Dashed + number: median.  Rug: one tick per run.  '
+             f'n = {n_mc} per panel.',
              fontsize=6.5, color='#777777', ha='center')
 
-    plt.tight_layout(rect=[0, 0.05, 1, 1])
-    path = os.path.join(out_dir, 'fig2_distributions.pdf')
-    fig.savefig(path, dpi=150, bbox_inches='tight')
-    png_path = path.replace('.pdf', '.png')
-    fig.savefig(png_path, dpi=150, bbox_inches='tight')
+    plt.tight_layout(rect=[0, 0.06, 1, 1])
+    path = _save_fig(fig, 'fig2_distributions', out_dir)
     plt.close(fig)
     return path
 
@@ -647,124 +681,127 @@ def plot_cascade_distributions(sweep_result: dict, out_dir: str = 'figures') -> 
 def plot_sensitivity(kappa_results: dict, out_dir: str = 'figures') -> str:
     """
     Figure 3: Mean cascade vs λ for multiple κ values.
-    Staggered right-side labels; absolute minimum gap to prevent overlap.
+    Coincidence is the finding — linestyles distinguish series; max |Δ| is on-figure.
     """
-    os.makedirs(out_dir, exist_ok=True)
-    colors = ['#4878CF', '#6ACC65', '#C44E52', '#8172B2']
     kappas = sorted(kappa_results.keys())
+    linestyles = ['-', '--', ':', '-.']
+    # Same ink family + linestyle: grayscale-survivable; overlap is the result.
+    colors = [C_BLUE, C_GREEN, C_VERM, C_ORANGE]
 
-    fig, ax = plt.subplots(figsize=(5.5, 3.5))
+    fig, ax = plt.subplots(figsize=(5.5, 3.4))
     _tufte_ax(ax)
 
-    for kappa, col in zip(kappas, colors):
+    ends = []
+    for kappa, col, ls in zip(kappas, colors, linestyles):
         res = kappa_results[kappa]
         lam = res['lambda_grid']
         mu  = res['mean_cascade']
-        ax.plot(lam, mu, color=col, linewidth=1.3, solid_capstyle='round')
+        ax.plot(lam, mu, color=col, linestyle=ls, linewidth=1.25,
+                solid_capstyle='round')
+        ends.append(float(mu[-1]))
 
-    # Right-edge labels: force absolute vertical separation regardless of
-    # how close the curves actually end. Sorted by end-value then pushed apart.
     all_mu = np.concatenate([kappa_results[k]['mean_cascade'] for k in kappas])
-    y_span = all_mu.max() - all_mu.min()
-    min_gap_abs = max(0.02 * y_span, 0.012)
-
-    ends = sorted(
-        [(k, kappa_results[k]['mean_cascade'][-1]) for k in kappas],
-        key=lambda x: x[1]
+    lstar = _find_lambda_star(
+        kappa_results[kappas[len(kappas)//2]]['lambda_grid'],
+        kappa_results[kappas[len(kappas)//2]]['mean_cascade'],
     )
-    placed_ys = []
-    last_y = -np.inf
-    for k, v in ends:
-        y = max(v, last_y + min_gap_abs)
-        placed_ys.append((k, y))
-        last_y = y
+    ax.axvline(lstar, color=C_GRAY, linewidth=0.6, linestyle=':', zorder=0)
+    ax.text(lstar - 0.01, all_mu.max() * 0.06, f'λ* ≈ {lstar:.2f}',
+            color=C_GRAY, fontsize=7, ha='right', va='bottom')
 
-    for k, y in placed_ys:
-        col = colors[kappas.index(k)]
-        ax.text(1.015, y, f'κ = {k:.2f}', color=col, fontsize=7.5,
+    # In-panel key (no legend box) sitting in the stable-regime whitespace
+    key_y = all_mu.max() * 0.92
+    for i, (k, col, ls) in enumerate(zip(kappas, colors, linestyles)):
+        y = key_y - i * all_mu.max() * 0.09
+        ax.plot([0.04, 0.14], [y, y], color=col, linestyle=ls, linewidth=1.2,
+                clip_on=False)
+        ax.text(0.16, y, f'κ = {k:.2f}', color=col, fontsize=7.5,
                 va='center', ha='left')
 
-    ax.set_xlabel('self-funding fraction λ', fontsize=9, labelpad=6)
-    ax.set_ylabel('mean cascade size', fontsize=9, labelpad=6)
-    ax.set_xlim(0, 1.16)
-    ax.set_ylim(bottom=0)
+    dmu = max(ends) - min(ends)
+    ax.text(0.04, key_y - len(kappas) * all_mu.max() * 0.09,
+            f'max |Δμ| at λ = 1.0: {dmu:.3f}',
+            color=C_GRAY, fontsize=7, va='center')
 
+    n = _n_runs(next(iter(kappa_results.values())))
+    ax.set_xlabel('self-funding fraction λ', fontsize=9, labelpad=6)
+    ax.set_ylabel('mean cascade size\n(fraction of network)', fontsize=9, labelpad=6)
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, all_mu.max() * 1.06)
     ax.spines['left'].set_bounds(0, all_mu.max())
     ax.spines['bottom'].set_bounds(0, 1)
 
-    fig.text(0.13, 0.01,
-             'κ = investor concentration. Curves are nearly coincident: the '
-             'transition location is insensitive to κ in this parametrization.',
+    fig.text(0.12, -0.01,
+             f'κ = investor concentration.  n = {n} runs per λ per κ.  '
+             'Curves coincide: transition location is insensitive to κ here.',
              fontsize=6.5, color='#777777')
 
-    plt.tight_layout(rect=[0, 0.04, 1, 1])
-    path = os.path.join(out_dir, 'fig3_sensitivity.pdf')
-    fig.savefig(path, dpi=150, bbox_inches='tight')
-    png_path = path.replace('.pdf', '.png')
-    fig.savefig(png_path, dpi=150, bbox_inches='tight')
+    plt.tight_layout(rect=[0, 0.05, 1, 1])
+    path = _save_fig(fig, 'fig3_sensitivity', out_dir)
     plt.close(fig)
     return path
 
 
 def plot_density_sensitivity(density_results: dict, out_dir: str = 'figures') -> str:
     """
-    Figure 5: Mean cascade vs λ for multiple network density values.
-    Density = expected number of bank-connections per fund.
-    Key finding: the transition location (λ*) is invariant across density;
-    cascade magnitude at high λ scales with density.
+    Figure 5: Mean cascade vs λ across network density.
+    Location of λ* is invariant; magnitude at λ = 1 scales with d.
     """
-    os.makedirs(out_dir, exist_ok=True)
-    colors = ['#4878CF', '#6ACC65', '#EE9A49', '#C44E52']
     densities = sorted(density_results.keys())
+    linestyles = ['-', '--', '-.', ':']
+    # Sequential luminance (light → dark = low → high d) + linestyle.
+    # Floor is dark enough to survive grayscale / print.
+    colors = ['#67a9cf', '#2b8cbe', '#0868ac', '#084081']
 
-    fig, ax = plt.subplots(figsize=(5.5, 3.5))
+    fig, ax = plt.subplots(figsize=(5.5, 3.4))
     _tufte_ax(ax)
 
-    for d, col in zip(densities, colors):
+    end_vals = []
+    for d, col, ls in zip(densities, colors, linestyles):
         res = density_results[d]
         lam = res['lambda_grid']
         mu  = res['mean_cascade']
-        ax.plot(lam, mu, color=col, linewidth=1.3, solid_capstyle='round')
-
-    # Stagger right-edge labels by end-value
-    end_vals = sorted(
-        [(d, density_results[d]['mean_cascade'][-1]) for d in densities],
-        key=lambda x: x[1]
-    )
-    y_range = max(v for _, v in end_vals) - min(v for _, v in end_vals)
-    placed = []
-    min_gap = 0.03 * max(v for _, v in end_vals) if y_range > 0 else 0.005
-    for d, v in end_vals:
-        y = v
-        while any(abs(y - py) < min_gap for py in placed):
-            y -= min_gap
-        placed.append(y)
-        col = colors[densities.index(d)]
-        ax.text(1.01, y, f'density = {d:.1f}', color=col, fontsize=7.5,
-                va='center', ha='left')
-
-    # Shade transition zone ~0.90-0.95 (invariant across density)
-    ax.axvspan(0.90, 0.95, color='#999999', alpha=0.08, linewidth=0)
-
-    ax.set_xlabel('self-funding fraction λ', fontsize=9, labelpad=6)
-    ax.set_ylabel('mean cascade size', fontsize=9, labelpad=6)
-    ax.set_xlim(0, 1.20)
-    ax.set_ylim(bottom=0)
+        ax.plot(lam, mu, color=col, linestyle=ls, linewidth=1.3,
+                solid_capstyle='round')
+        end_vals.append((d, float(mu[-1]), col))
 
     all_mu = np.concatenate([density_results[d]['mean_cascade'] for d in densities])
+    # λ* from the default-density curve if present, else the middle series
+    d_ref = 2.0 if 2.0 in density_results else densities[len(densities)//2]
+    lstar = _find_lambda_star(density_results[d_ref]['lambda_grid'],
+                              density_results[d_ref]['mean_cascade'])
+    lonset_vals = [
+        _find_lambda_onset(density_results[d]['lambda_grid'],
+                           density_results[d]['mean_cascade'],
+                           density_results[d]['std_cascade'], k=2.0)
+        for d in densities
+    ]
+    ax.axvspan(min(lonset_vals), lstar, color='#999999', alpha=0.10, linewidth=0)
+    ax.axvline(lstar, color=C_GRAY, linewidth=0.6, linestyle=':', zorder=0)
+    ax.text(lstar - 0.01, all_mu.max() * 0.04, f'λ* ≈ {lstar:.2f}',
+            color=C_GRAY, fontsize=7, ha='right', va='bottom')
+
+    # Labels live just past λ = 1 (clip_on=False) so the axis itself stops at 1
+    for d, v, col in end_vals:
+        ax.text(1.02, v, f'd = {d:.0f}   {v:.2f}',
+                color=col, fontsize=7.5, va='center', ha='left', clip_on=False)
+
+    n = _n_runs(next(iter(density_results.values())))
+    ax.set_xlabel('self-funding fraction λ', fontsize=9, labelpad=6)
+    ax.set_ylabel('mean cascade size\n(fraction of network)', fontsize=9, labelpad=6)
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, all_mu.max() * 1.06)
     ax.spines['left'].set_bounds(0, all_mu.max())
     ax.spines['bottom'].set_bounds(0, 1)
 
-    fig.text(0.13, 0.01,
-             'density = expected bank-connections per fund. '
-             'Grey band: transition zone (≈0.90–0.95) across all densities.',
+    fig.text(0.12, -0.01,
+             f'd = expected bank-connections per fund.  '
+             f'n = {n} runs per λ per d.  '
+             'Grey window: [min λ_onset, λ*].  Right numbers: μ at λ = 1.',
              fontsize=6.5, color='#777777')
 
-    plt.tight_layout(rect=[0, 0.04, 1, 1])
-    path = os.path.join(out_dir, 'fig5_density_sensitivity.pdf')
-    fig.savefig(path, dpi=150, bbox_inches='tight')
-    png_path = path.replace('.pdf', '.png')
-    fig.savefig(png_path, dpi=150, bbox_inches='tight')
+    plt.tight_layout(rect=[0, 0.05, 1, 1])
+    path = _save_fig(fig, 'fig5_density_sensitivity', out_dir)
     plt.close(fig)
     return path
 
@@ -773,11 +810,10 @@ def plot_lppls_illustration(sweep_result: dict, out_dir: str = 'figures') -> str
     """
     Figure 4: Synthetic LPPLS time series. Purely illustrative of the
     super-exponential-with-shivers shape described in §4.1.
-    Per SME review, no cascade onset overlay is drawn: mapping λ* to a time
-    position would imply a t_c prediction that the paper explicitly disclaims.
+    Envelope (C = 0) is drawn so the oscillations are a visible residual.
+    No cascade-onset overlay: mapping λ* to a time position would imply a
+    t_c prediction that the paper explicitly disclaims.
     """
-    os.makedirs(out_dir, exist_ok=True)
-
     # Synthetic LPPLS: ln(p) = A + B*(tc-t)^m * (1 + C*cos(w*ln(tc-t) + phi))
     # Parameters chosen to produce a ~5x rise with visible log-periodic shivers.
     tc   = 10.5
@@ -785,57 +821,149 @@ def plot_lppls_illustration(sweep_result: dict, out_dir: str = 'figures') -> str
     dt   = tc - t
     A, B, m = 6.0, -0.55, 0.45
     C, w, phi = 0.04, 7.0, 1.2
-    ln_p = A + B * dt**m * (1 + C * np.cos(w * np.log(dt) + phi))
-    price = np.exp(ln_p)
+    ln_p   = A + B * dt**m * (1 + C * np.cos(w * np.log(dt) + phi))
+    ln_env = A + B * dt**m
+    price     = np.exp(ln_p)
+    price_env = np.exp(ln_env)
+    # Index convention: start = 100
+    scale = 100.0 / price[0]
+    price     = price * scale
+    price_env = price_env * scale
+    tau = t / tc
 
-    fig, ax = plt.subplots(figsize=(5.5, 3.5))
+    fig, ax = plt.subplots(figsize=(5.5, 3.4))
     _tufte_ax(ax)
 
-    ax.plot(t, price, color='#4878CF', linewidth=1.3, solid_capstyle='round')
+    ax.plot(tau, price_env, color='#aaaaaa', linewidth=0.9, linestyle='--',
+            solid_capstyle='round', zorder=1)
+    ax.plot(tau, price, color=C_BLUE, linewidth=1.3, solid_capstyle='round',
+            zorder=2)
 
-    # Annotate log-periodic oscillations on a shiver
-    shiver_idx = np.argmin(np.abs(t - 4.5))
-    ax.annotate('log-periodic\n"shiver"',
-                xy=(t[shiver_idx], price[shiver_idx]),
-                xytext=(t[shiver_idx] - 1.8, price[shiver_idx] * 0.92),
-                fontsize=7, color='#555555',
+    # Envelope label sits on the early dashed line, well left of the shiver callout
+    env_i = int(0.28 * len(tau))
+    ax.text(tau[env_i], price_env[env_i] + (price.max() - price.min()) * 0.06,
+            'envelope (C = 0)', color='#888888', fontsize=7,
+            ha='center', va='bottom')
+
+    # Shiver: largest residual at t/t_c > 0.70, labeled in the upper whitespace
+    resid = price - price_env
+    late = slice(int(0.70 * len(tau)), None)
+    shiver_idx = late.start + int(np.argmax(np.abs(resid[late])))
+    ax.annotate('log-periodic\noscillation',
+                xy=(tau[shiver_idx], price[shiver_idx]),
+                xytext=(0.52, price.max() * 0.78),
+                fontsize=7, color=C_GRAY,
                 arrowprops=dict(arrowstyle='->', color='#888888',
-                                lw=0.7, connectionstyle='arc3,rad=0.2'))
+                                lw=0.7, connectionstyle='arc3,rad=-0.15'))
 
-    # X-axis: label as years relative to cycle start, not absolute
-    year_ticks = [0.5, 2.5, 4.5, 6.5, 8.5]
-    ax.set_xticks(year_ticks)
-    ax.set_xticklabels([f'Y{int(y - 0.5 + 1)}' for y in year_ticks], fontsize=8)
-
-    ax.set_xlabel('time (stylized cycle years)', fontsize=9, labelpad=6)
-    ax.set_ylabel('SRT issuance index\n(normalized)', fontsize=9, labelpad=6)
-    ax.set_xlim(t[0] - 0.2, t[-1] + 0.3)
-    ax.set_ylim(bottom=price.min() * 0.95)
+    ax.set_xlabel('t / t_c   (synthetic coordinate; t_c is not estimated)',
+                  fontsize=9, labelpad=6)
+    ax.set_ylabel('index (start = 100)', fontsize=9, labelpad=6)
+    ax.set_xlim(tau[0], tau[-1])
+    ax.set_ylim(price.min() * 0.92, price.max() * 1.04)
+    ax.set_xticks([0.2, 0.4, 0.6, 0.8])
     ax.spines['left'].set_bounds(price.min(), price.max())
-    ax.spines['bottom'].set_bounds(t[0], t[-1])
+    ax.spines['bottom'].set_bounds(tau[0], tau[-1])
 
-    # Prominent synthetic label
     ax.text(0.02, 0.97,
-            'SYNTHETIC, illustrative only.\nNo empirical fit. No t_c prediction.',
-            transform=ax.transAxes, fontsize=7, color='#C44E52',
-            va='top', ha='left',
-            bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
-                      edgecolor='#C44E52', linewidth=0.6, alpha=0.9))
+            'Synthetic illustration — no empirical fit, no t_c prediction.',
+            transform=ax.transAxes, fontsize=7, color=C_VERM,
+            va='top', ha='left')
 
-    plt.tight_layout(rect=[0, 0.02, 1, 1])
-    path = os.path.join(out_dir, 'fig4_lppls_illustration.pdf')
-    fig.savefig(path, dpi=150, bbox_inches='tight')
-    png_path = path.replace('.pdf', '.png')
-    fig.savefig(png_path, dpi=150, bbox_inches='tight')
+    fig.text(0.12, -0.01,
+             r'$\ln p = A + B(t_c-t)^{m}\,[1 + C\cos(\omega\ln(t_c-t)+\phi)]$.  '
+             'Dashed: same law with C = 0.  Not a fit to SRT issuance.',
+             fontsize=6.5, color='#777777')
+
+    plt.tight_layout(rect=[0, 0.05, 1, 1])
+    path = _save_fig(fig, 'fig4_lppls_illustration', out_dir)
+    plt.close(fig)
+    return path
+
+
+def plot_tranche_comparison(sweep_default: dict, sweep_empirical: dict,
+                            out_dir: str = 'figures') -> str:
+    """
+    Figure 6: Mean cascade vs λ at δ = 0.08 (paper default) vs δ = 0.15
+    (Osberghaus & Schepens 2026 median junior tranche).
+    Coincidence of the curves is the invariance result; the onset-window
+    tightening is the v2 mechanism the figure must make visible.
+    """
+    lam08 = sweep_default['lambda_grid']
+    mu08  = sweep_default['mean_cascade']
+    sd08  = sweep_default['std_cascade']
+    lam15 = sweep_empirical['lambda_grid']
+    mu15  = sweep_empirical['mean_cascade']
+
+    lon08 = _find_lambda_onset(lam08, mu08, sd08, k=2.0)
+    lon15 = _find_lambda_onset(lam15, mu15, sweep_empirical['std_cascade'], k=2.0)
+    lstar = _find_lambda_star(lam08, mu08)
+    n = _n_runs(sweep_default)
+    # Pointwise |Δ| on the shared grid (both sweeps use the same λ grid)
+    dmu = float(np.max(np.abs(mu08 - mu15)))
+
+    fig, ax = plt.subplots(figsize=(5.5, 3.4))
+    _tufte_ax(ax)
+
+    # One band only — the two SDs overlap; a second fill is redundant ink
+    ax.fill_between(lam08, np.clip(mu08 - sd08, 0, None), mu08 + sd08,
+                    color=C_BLUE, alpha=0.10, linewidth=0, zorder=1)
+    ax.plot(lam08, mu08, color=C_BLUE, linewidth=1.4, linestyle='-',
+            solid_capstyle='round', zorder=2)
+    ax.plot(lam15, mu15, color=C_VERM, linewidth=1.3, linestyle='--',
+            solid_capstyle='round', zorder=3)
+
+    # Onset tightening: two marks. At δ = 0.15 onset collapses onto λ*.
+    ax.axvline(lon08, color=C_BLUE, linewidth=0.6, linestyle=':', zorder=1)
+    ax.axvline(lon15, color=C_VERM, linewidth=0.6, linestyle=':', zorder=1)
+    ax.text(lon08 - 0.01, (mu08 + sd08).max() * 0.06,
+            f'λ_onset(δ=0.08) ≈ {lon08:.2f}',
+            color=C_BLUE, fontsize=7, ha='right', va='bottom')
+    if abs(lon15 - lstar) < 1e-9:
+        onset15_txt = f'λ_onset = λ* ≈ {lon15:.2f}  (δ=0.15)'
+    else:
+        onset15_txt = f'λ_onset(δ=0.15) ≈ {lon15:.2f}'
+    ax.text(min(lon15 + 0.012, 0.99), (mu08 + sd08).max() * 0.06,
+            onset15_txt, color=C_VERM, fontsize=7, ha='left', va='bottom')
+
+    # In-panel key + the invariance number
+    y_key = (mu08 + sd08).max() * 0.92
+    ax.plot([0.04, 0.14], [y_key, y_key], color=C_BLUE, lw=1.3)
+    ax.text(0.16, y_key, 'δ = 0.08  (paper default)',
+            color=C_BLUE, fontsize=7.5, va='center')
+    ax.plot([0.04, 0.14], [y_key * 0.90, y_key * 0.90],
+            color=C_VERM, lw=1.2, linestyle='--')
+    ax.text(0.16, y_key * 0.90, 'δ = 0.15  (empirical median)',
+            color=C_VERM, fontsize=7.5, va='center')
+    ax.text(0.04, y_key * 0.78,
+            f'max |Δμ| = {dmu:.3f}   μ(λ=1): {mu08[-1]:.3f} vs {mu15[-1]:.3f}',
+            color=C_GRAY, fontsize=7, va='center')
+
+    ax.set_xlabel('self-funding fraction λ', fontsize=9, labelpad=6)
+    ax.set_ylabel('mean cascade size\n(fraction of network)', fontsize=9, labelpad=6)
+    y_top = max((mu08 + sd08).max(), mu15.max()) * 1.04
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, y_top)
+    ax.spines['left'].set_bounds(0, max(mu08.max(), mu15.max()))
+    ax.spines['bottom'].set_bounds(0, 1)
+
+    fig.text(0.12, -0.01,
+             f'n = {n} runs per λ per δ.  '
+             'δ = 0.15 is the median junior-tranche thickness, '
+             'Osberghaus & Schepens (2026).  Band: ±1 SD at δ = 0.08.',
+             fontsize=6.5, color='#777777')
+
+    plt.tight_layout(rect=[0, 0.05, 1, 1])
+    path = _save_fig(fig, 'fig6_tranche_comparison', out_dir)
     plt.close(fig)
     return path
 
 
 def plot_all(sweep_result: dict, kappa_results: dict,
              density_results: dict = None,
+             tranche_result: dict = None,
              out_dir: str = 'figures') -> list:
     """Run all plot functions. Returns list of output paths."""
-    # Global rcParams — set once
     plt.rcParams.update({
         'font.family':      'sans-serif',
         'font.sans-serif':  ['Helvetica Neue', 'Arial', 'DejaVu Sans'],
@@ -856,6 +984,8 @@ def plot_all(sweep_result: dict, kappa_results: dict,
     ]
     if density_results is not None:
         paths.append(plot_density_sensitivity(density_results, out_dir))
+    if tranche_result is not None:
+        paths.append(plot_tranche_comparison(sweep_result, tranche_result, out_dir))
     return paths
 
 
@@ -1006,6 +1136,70 @@ def export_cockpit_csv(sweep_result: dict, out_dir: str = 'figures') -> str:
     return path
 
 
+def _write_publication_summary(
+    sweep_result: dict,
+    kappa_results: dict,
+    density_results: dict,
+    tranche_result: dict,
+    max_abs_dmu: float,
+    tranche_onset: float,
+    tranche_star: float,
+    *,
+    seed: int,
+    n_runs_sweep: int,
+    n_runs_kappa: int,
+    n_runs_density: int,
+    shock_size: float,
+    dest: str = 'results/publication_sweep_summary.json',
+) -> str:
+    """Persist publication-sweep scalars for the manuscript integrity gate."""
+    os.makedirs(os.path.dirname(dest) or '.', exist_ok=True)
+    d1 = density_results[1.0]
+    d5 = density_results[5.0]
+    payload = {
+        "schema": "srt-publication-sweep/v1",
+        "note": (
+            "Summary of python srt_simulation.py. "
+            "Not the n=80 claim-gate JSON. "
+            "Do not bind these percents to srt_claim_verify.json."
+        ),
+        "seed": seed,
+        "n_runs_sweep": n_runs_sweep,
+        "n_runs_kappa": n_runs_kappa,
+        "n_runs_density": n_runs_density,
+        "shock_size": shock_size,
+        "lambda_onset": _find_lambda_onset(
+            sweep_result['lambda_grid'], sweep_result['mean_cascade'],
+            sweep_result['std_cascade'], k=2.0,
+        ),
+        "lambda_star": _find_lambda_star(
+            sweep_result['lambda_grid'], sweep_result['mean_cascade'],
+        ),
+        "lambda_star_percent": 95,
+        "mean_cascade_lambda0": float(sweep_result['mean_cascade'][0]),
+        "mean_cascade_lambda1": float(sweep_result['mean_cascade'][-1]),
+        "density_d1_cascade_lambda1": float(d1['mean_cascade'][-1]),
+        "density_d1_cascade_percent": int(round(d1['mean_cascade'][-1] * 100)),
+        "density_d2_cascade_lambda1": float(density_results[2.0]['mean_cascade'][-1]),
+        "density_d3_cascade_lambda1": float(density_results[3.0]['mean_cascade'][-1]),
+        "density_d5_cascade_lambda1": float(d5['mean_cascade'][-1]),
+        "density_d5_cascade_percent": int(round(d5['mean_cascade'][-1] * 100)),
+        "tranche_delta_015_lambda_onset": float(tranche_onset),
+        "tranche_delta_015_lambda_star": float(tranche_star),
+        "tranche_max_abs_dmu": float(max_abs_dmu),
+        "tranche_delta_015_mean_cascade_lambda1": float(
+            tranche_result['mean_cascade'][-1]
+        ),
+    }
+    # Keep the printed 95% label honest: only write it when λ* rounds to 0.95
+    star = payload["lambda_star"]
+    payload["lambda_star_percent"] = int(round(star * 100))
+    with open(dest, 'w', encoding='utf-8') as fh:
+        json.dump(payload, fh, indent=2)
+        fh.write('\n')
+    return dest
+
+
 def main(
     n_runs_sweep:   int = 1000,
     n_runs_kappa:   int = 500,
@@ -1015,7 +1209,7 @@ def main(
     seed:           int = DEFAULT_SEED,
 ) -> None:
     """
-    Full pipeline: sweep → sensitivity (kappa, density) → plots → cockpit CSV.
+    Full pipeline: sweep → sensitivity (kappa, density, tranche) → plots → cockpit CSV.
     Called by GitHub Actions / Zenodo reproduction script.
     """
     global RNG
@@ -1023,7 +1217,7 @@ def main(
 
     grid = np.linspace(0.0, 1.0, 21)
 
-    print(f"[1/5] Lambda sweep  (n_runs={n_runs_sweep}, shock={shock_size}) ...")
+    print(f"[1/6] Lambda sweep  (n_runs={n_runs_sweep}, shock={shock_size}) ...")
     sw = sweep_lambda(lambda_grid=grid, n_runs=n_runs_sweep,
                       shock_size=shock_size)
     lstar  = _find_lambda_star(sw['lambda_grid'], sw['mean_cascade'])
@@ -1032,10 +1226,10 @@ def main(
     print(f"      λ_onset ≈ {lonset:.2f}  λ*(cliff) ≈ {lstar:.2f}  "
           f"max cascade: {sw['mean_cascade'].max():.3f}")
 
-    print(f"[2/5] Kappa sensitivity (n_runs={n_runs_kappa}) ...")
+    print(f"[2/6] Kappa sensitivity (n_runs={n_runs_kappa}) ...")
     kres = sweep_kappa_sensitivity(lambda_grid=grid, n_runs=n_runs_kappa)
 
-    print(f"[3/5] Density sensitivity (n_runs={n_runs_density}) ...")
+    print(f"[3/6] Density sensitivity (n_runs={n_runs_density}) ...")
     dres = sweep_density_sensitivity(lambda_grid=grid, n_runs=n_runs_density)
     print("      density    λ_onset  λ*(cliff)  cascade(λ=1.0)")
     for d in sorted(dres.keys()):
@@ -1044,15 +1238,31 @@ def main(
         ls = _find_lambda_star(r['lambda_grid'], r['mean_cascade'])
         print(f"      {d:>5.1f}      {lo:>5.2f}     {ls:>5.2f}     {r['mean_cascade'][-1]:>.3f}")
 
-    print("[4/5] Generating figures ...")
-    fig_paths = plot_all(sw, kres, dres, out_dir=out_dir)
+    print(f"[4/6] Tranche comparison δ=0.15 (n_runs={n_runs_sweep}) ...")
+    sw15 = sweep_lambda(lambda_grid=grid, n_runs=n_runs_sweep,
+                        shock_size=shock_size, tranche_thickness=0.15)
+    lon15 = _find_lambda_onset(sw15['lambda_grid'], sw15['mean_cascade'],
+                               sw15['std_cascade'], k=2.0)
+    ls15  = _find_lambda_star(sw15['lambda_grid'], sw15['mean_cascade'])
+    dmu15 = float(np.max(np.abs(sw['mean_cascade'] - sw15['mean_cascade'])))
+    print(f"      δ=0.15  λ_onset ≈ {lon15:.2f}  λ* ≈ {ls15:.2f}  "
+          f"max |Δμ| vs δ=0.08 = {dmu15:.3f}")
+
+    print("[5/6] Generating figures ...")
+    fig_paths = plot_all(sw, kres, dres, tranche_result=sw15, out_dir=out_dir)
     for p in fig_paths:
         print(f"      {p}")
 
-    print("[5/5] Exporting cockpit CSV ...")
+    print("[6/6] Exporting cockpit CSV and sweep summary ...")
     metrics = compute_proxy_metrics(sw)
     csv_path = export_cockpit_csv(sw, out_dir=out_dir)
     print(f"      {csv_path}")
+    summary_path = _write_publication_summary(
+        sw, kres, dres, sw15, dmu15, lon15, ls15, seed=seed,
+        n_runs_sweep=n_runs_sweep, n_runs_kappa=n_runs_kappa,
+        n_runs_density=n_runs_density, shock_size=shock_size,
+    )
+    print(f"      {summary_path}")
 
     print("\n=== Cockpit summary (Q1 2026 readings) ===")
     ranked = sorted(metrics.items(), key=lambda x: x[1]['rank'])

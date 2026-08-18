@@ -1,0 +1,21 @@
+{
+  "schema": "srt-model-parameters/v1",
+  "note": "Defaults and sweep bounds as implemented in srt_simulation.py and Table 1. bank_distress_threshold is BANK_DISTRESS_THRESHOLD in run_cascade.",
+  "n_banks": 10,
+  "n_funds": 20,
+  "tranche_thickness": 0.08,
+  "tranche_thickness_range_lo": 0.04,
+  "tranche_thickness_range_hi": 0.15,
+  "shock_size": 0.05,
+  "shock_size_range_lo": 0.01,
+  "shock_size_range_hi": 0.2,
+  "kappa": 0.75,
+  "kappa_range_lo": 0.4,
+  "kappa_range_hi": 0.98,
+  "density": 2.0,
+  "density_range_lo": 1.0,
+  "density_range_hi": 5.0,
+  "lambda_range_hi": 1.0,
+  "bank_distress_threshold": 0.2,
+  "bank_distress_threshold_percent": 20
+}
