@@ -6,7 +6,8 @@ All notable changes to this companion repository are documented here.
 
 - Added `ROBUSTNESS_CHECK_dyb-2026k-v2.md`: full-surface stress test of paper v2 (22 frozen rows; own-draft mode)
 - Headline T0–T2 claims reproduce; keystones call out self-funding flag order and λ* grid/detector artifacts
-- Repo companion only — no new Zenodo paper version; optional attach to record `21995468` deferred
+- Repo companion only — no new Zenodo paper version
+- Zenodo `21995468`: metadata note + `isSupplementedBy` URL to the GitHub robustness check (same DOI; file bucket locked without a new version)
 
 ## [2.0] — 2026-08-18 — paper v2
 
