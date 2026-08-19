@@ -12,6 +12,8 @@ Paper and software are **separate concepts**. Do not merge the PDF and the code 
 
 GitHub: https://github.com/chokmah-me/srt-circular-leverage
 
+**Repo companion (not a Zenodo version):** `ROBUSTNESS_CHECK_dyb-2026k-v2.md` — stress test of v2 claims (22 frozen rows). Optional: attach the Markdown to paper record [21995468](https://zenodo.org/records/21995468) without minting a new version. Does **not** change concept DOI `19632277` or v2 pin `21995468`.
+
 ---
 
 ## Mint checklist (human)

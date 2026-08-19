@@ -2,6 +2,12 @@
 
 All notable changes to this companion repository are documented here.
 
+## [Unreleased] — 2026-08-18 — robustness check (v2 companion)
+
+- Added `ROBUSTNESS_CHECK_dyb-2026k-v2.md`: full-surface stress test of paper v2 (22 frozen rows; own-draft mode)
+- Headline T0–T2 claims reproduce; keystones call out self-funding flag order and λ* grid/detector artifacts
+- Repo companion only — no new Zenodo paper version; optional attach to record `21995468` deferred
+
 ## [2.0] — 2026-08-18 — paper v2
 
 - Paper v2 (`dyb-2026k-circular-nw-risk-v2.md` / `.pdf`): Osberghaus and Schepens (2026) calibration, Figure 6 (δ = 0.15 vs 0.08), cockpit through Q2/Q3 2026, Tufte restyle of Figures 1–5

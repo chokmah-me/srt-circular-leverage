@@ -10,6 +10,8 @@
 
 **Claim gate:** `python verify_srt_claims.py` — thin re-run of load-bearing phase-transition claims (~10s). Last verified 2026-08-18 (`status=pass`). See [Quickstart](#quickstart), [Computational claim gate](#computational-claim-gate-thin-mc), and [CHANGELOG.md](CHANGELOG.md).
 
+**Robustness check (companion):** [ROBUSTNESS_CHECK_dyb-2026k-v2.md](ROBUSTNESS_CHECK_dyb-2026k-v2.md) — frozen 22-row stress surface against v2; not a Zenodo version bump.
+
 ---
 
 ## What this paper does
@@ -76,6 +78,7 @@ figures/                  # generated figures / cockpit CSV
 dyb-2026k-circular-nw-risk-v2.md   # paper (Markdown source)
 dyb-2026k-circular-nw-risk-v2.pdf  # export for Zenodo
 dyb-2026k-circular-nw-risk-v1.md   # v1 source (superseded)
+ROBUSTNESS_CHECK_dyb-2026k-v2.md   # companion stress test (not a paper version)
 ZENODO.md                         # concept vs version DOIs + mint packet
 integrity-manifest.json
 README.md
