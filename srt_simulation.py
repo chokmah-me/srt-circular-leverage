@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from scipy.stats import powerlaw
 from collections import defaultdict
-import csv, json, os
+import csv, json, os, textwrap
 
 # ---------------------------------------------------------------------------
 # Global RNG — set seed here for reproducibility; pass rng= to override
@@ -511,6 +511,20 @@ def _tufte_ax(ax):
     ax.xaxis.set_ticks_position('bottom')
 
 
+def _reading_guide(fig, text: str, *, x: float = 0.10, width: int = 92) -> None:
+    """Place the reading guide fully inside the figure (never below y=0).
+
+    Use va='bottom' near the lower margin so wrapped lines grow upward into the
+    reserved footer band instead of clipping off the saved PNG/PDF.
+    """
+    fig.text(
+        x, 0.025,
+        textwrap.fill(text, width=width),
+        fontsize=6.5, color='#555555', ha='left', va='bottom',
+        linespacing=1.2,
+    )
+
+
 def _n_runs(sweep_result: dict) -> int:
     cascades = sweep_result.get('all_cascades')
     if cascades is None or len(cascades) == 0:
@@ -566,7 +580,9 @@ def plot_phase_transition(sweep_result: dict, out_dir: str = 'figures') -> str:
     lonset = _find_lambda_onset(lam, mu, sd, k=2.0)
     n     = _n_runs(sweep_result)
 
-    fig, ax = plt.subplots(figsize=(5.5, 3.4))
+    # Reserved title / panel / footer bands (avoid label bleed + tight-crop fights)
+    fig = plt.figure(figsize=(5.6, 3.8))
+    ax = fig.add_axes([0.14, 0.22, 0.82, 0.62])
     _tufte_ax(ax)
 
     ax.fill_between(lam, np.clip(mu - sd, 0, None), mu + sd,
@@ -579,11 +595,15 @@ def plot_phase_transition(sweep_result: dict, out_dir: str = 'figures') -> str:
     ax.axvline(lonset, color=C_GRAY, linewidth=0.6, linestyle=':', zorder=1)
     ax.axvline(lstar,  color=C_VERM, linewidth=0.7, linestyle=':', zorder=1)
 
-    y_lo = 0.012
-    ax.text(lonset - 0.025, y_lo, f'λ_onset ≈ {lonset:.2f}',
-            color=C_GRAY, fontsize=7, va='bottom', ha='right')
-    ax.text(min(lstar + 0.02, 0.995), y_lo, f'λ* ≈ {lstar:.2f}',
-            color=C_VERM, fontsize=7, va='bottom', ha='left')
+    # Threshold labels in the top margin of the axes (not on the curve)
+    y_hi = max((mu + sd).max() * 1.04, mu.max() + 0.04)
+    ax.set_ylim(0, y_hi)
+    ax.text(lonset - 0.01, 0.97, rf'$\lambda_{{\mathrm{{onset}}}}\approx{lonset:.2f}$',
+            transform=ax.get_xaxis_transform(),
+            color=C_GRAY, fontsize=7, va='top', ha='right')
+    ax.text(min(lstar + 0.01, 0.995), 0.97, rf'$\lambda^{{*}}\approx{lstar:.2f}$',
+            transform=ax.get_xaxis_transform(),
+            color=C_VERM, fontsize=7, va='top', ha='left')
 
     # Direct-label the two levels the text compares (≈3×)
     ax.text(0.012, mu[0] + 0.008, f'{mu[0]:.2f}',
@@ -592,90 +612,198 @@ def plot_phase_transition(sweep_result: dict, out_dir: str = 'figures') -> str:
                 xytext=(-3, 5), textcoords='offset points',
                 color=C_BLUE, fontsize=7, ha='right', va='bottom')
 
-    ax.set_xlabel('self-funding fraction λ', fontsize=9, labelpad=6)
+    ax.set_xlabel(r'self-funding fraction $\lambda$', fontsize=9, labelpad=6)
     ax.set_ylabel('mean cascade size\n(fraction of network)', fontsize=9, labelpad=6)
     ax.set_xlim(0, 1)
-    ax.set_ylim(0, max((mu + sd).max() * 1.04, mu.max() + 0.04))
-    ax.spines['left'].set_bounds(0, mu.max())
+    ax.spines['left'].set_bounds(0, min(mu.max(), y_hi))
     ax.spines['bottom'].set_bounds(0, 1)
 
-    fig.text(0.12, -0.01,
-             f'n = {n} Monte Carlo runs per λ.  '
-             'Default network: 10 banks, 20 funds, κ = 0.75, d = 2, δ = 0.08.  '
-             'Band: ±1 SD.  Dashed: λ = 0 baseline.  Grey window: [λ_onset, λ*].',
-             fontsize=6.5, color='#777777')
-
-    plt.tight_layout(rect=[0, 0.05, 1, 1])
-    path = _save_fig(fig, 'fig1_phase_transition', out_dir)
+    fig.text(0.14, 0.92,
+             r'Cascade risk stays near baseline, then jumps in two stages as '
+             r'$\lambda$ rises',
+             fontsize=9, color=C_INK, ha='left', va='top')
+    _reading_guide(
+        fig,
+        f'Reading guide: the blue curve is average cascade size across {n} '
+        r'simulated networks at each $\lambda$; the light band is run-to-run '
+        r'spread ($\pm 1$ SD). The grey window marks the two-stage transition '
+        r'(soft onset, then the cliff). Dashed line: baseline at $\lambda=0$.',
+        x=0.14, width=95,
+    )
+    # Fixed bbox preserves reserved title/footer bands
+    os.makedirs(out_dir, exist_ok=True)
+    pdf_path = os.path.join(out_dir, 'fig1_phase_transition.pdf')
+    png_path = os.path.join(out_dir, 'fig1_phase_transition.png')
+    fig.savefig(pdf_path, dpi=300, bbox_inches=None)
+    fig.savefig(png_path, dpi=300, bbox_inches=None)
+    if os.path.basename(os.path.normpath(out_dir)) == 'figures':
+        fig.savefig(os.path.join(_REPO_ROOT, 'fig1_phase_transition.png'),
+                    dpi=300, bbox_inches=None)
     plt.close(fig)
-    return path
+    return pdf_path
 
 
 def plot_cascade_distributions(sweep_result: dict, out_dir: str = 'figures') -> str:
     """
     Figure 2: Cascade-size distributions at λ_low, λ_mid, λ_high.
     Shared x-scale so Dragon King mass is visibly beyond the stable-regime support.
+    Tufte devices: small multiples, rugs, reference line+band, direct labels,
+    micro-table, sparkline linking snapshots to the λ path, range-frames.
     """
-    lam_grid = sweep_result['lambda_grid']
+    lam_grid = np.asarray(sweep_result['lambda_grid'], dtype=float)
     cascades = sweep_result['all_cascades']
+    mu_path = np.asarray(sweep_result['mean_cascade'], dtype=float)
     n_mc = _n_runs(sweep_result)
 
     n = len(lam_grid)
+    idx_lo, idx_mid, idx_hi = 2, n // 2, n - 1
     picks = [
-        (lam_grid[2],       cascades[2],       'stable',      C_GRAY),
-        (lam_grid[n // 2],  cascades[n // 2],  '',            C_GRAY),
-        (lam_grid[n - 1],   cascades[n - 1],   'Dragon King', C_VERM),
+        (float(lam_grid[idx_lo]),  cascades[idx_lo],  'stable',      C_GRAY, idx_lo),
+        (float(lam_grid[idx_mid]), cascades[idx_mid], 'mid',         C_SKY,  idx_mid),
+        (float(lam_grid[idx_hi]),  cascades[idx_hi],  'Dragon King', C_VERM, idx_hi),
     ]
 
-    xmax = max(float(data.max()) for _, data, _, _ in picks)
+    xmax = max(float(np.max(data)) for _, data, _, _, _ in picks)
     xmax = max(xmax, 0.05)
     bin_edges = np.linspace(0, xmax, 31)
     p95_stable = float(np.percentile(picks[0][1], 95))
 
-    fig, axes = plt.subplots(1, 3, figsize=(7.4, 2.9), sharex=True, sharey=True)
-
-    hist_counts = []
-    for ax, (lv, data, tag, col) in zip(axes, picks):
-        _tufte_ax(ax)
-        counts, _, _ = ax.hist(data, bins=bin_edges, color=col, alpha=0.82,
-                               linewidth=0)
-        hist_counts.append(counts)
+    # Per-panel summaries for micro-table + callouts
+    rows = []
+    for lv, data, tag, col, _ in picks:
+        data = np.asarray(data, dtype=float)
         med = float(np.median(data))
-        ax.axvline(p95_stable, color='#bbbbbb', linewidth=0.6, linestyle=':',
-                   zorder=1)
-        ax.axvline(med, color=col, linewidth=0.8, linestyle='--', zorder=2)
-        title = f'λ = {lv:.2f}'
-        if tag:
-            title += f'  ({tag})'
-        title += f'\nmedian {med:.2f}'
-        ax.set_title(title, fontsize=9, pad=4, fontweight='normal',
+        mean = float(np.mean(data))
+        p95 = float(np.percentile(data, 95))
+        frac_beyond = float(np.mean(data > p95_stable))
+        rows.append(dict(lam=lv, tag=tag, col=col, med=med, mean=mean,
+                         p95=p95, frac=frac_beyond, mx=float(data.max())))
+
+    fig = plt.figure(figsize=(7.8, 5.2))
+    # Bands: title | sparkline | panels | micro-table | footer
+    ax_spark = fig.add_axes([0.10, 0.76, 0.86, 0.07])
+    axes = []
+    left, width, gap = 0.10, 0.26, 0.045
+    for i in range(3):
+        axes.append(fig.add_axes([left + i * (width + gap), 0.40, width, 0.28]))
+
+    # --- Sparkline: mean cascade vs λ; dots mark the three panel snapshots ---
+    _tufte_ax(ax_spark)
+    ax_spark.plot(lam_grid, mu_path, color=C_BLUE, linewidth=1.1,
+                  solid_capstyle='round', zorder=2)
+    for lv, _, tag, col, idx in picks:
+        ax_spark.plot(lv, mu_path[idx], 'o', color=col, markersize=5.5,
+                      markeredgecolor='white', markeredgewidth=0.5, zorder=3)
+    ax_spark.set_xlim(0, 1)
+    y0, y1 = float(mu_path.min()), float(mu_path.max())
+    pad = 0.08 * (y1 - y0 + 1e-9)
+    ax_spark.set_ylim(y0 - pad, y1 + pad)
+    ax_spark.spines['bottom'].set_bounds(0, 1)
+    ax_spark.spines['left'].set_bounds(y0, y1)
+    ax_spark.set_xticks([0, 0.5, 1.0])
+    ax_spark.set_ylabel(r'$\mu$', fontsize=7, rotation=0, labelpad=8, va='center')
+    ax_spark.tick_params(labelsize=6)
+    fig.text(0.10, 0.845,
+             r'Sparkline: mean cascade vs $\lambda$ (colored dots = the three panels)',
+             fontsize=6.5, color='0.4', ha='left', va='bottom')
+
+    # --- Small-multiple histograms ---
+    hist_counts = []
+    for ax, (lv, data, tag, col, _), row in zip(axes, picks, rows):
+        _tufte_ax(ax)
+        data = np.asarray(data, dtype=float)
+        # Reference band: mass beyond stable p95 (the comparison that matters)
+        if tag != 'stable':
+            ax.axvspan(p95_stable, xmax, color=C_VERM, alpha=0.07, linewidth=0,
+                       zorder=0)
+        counts, _, _ = ax.hist(data, bins=bin_edges, color=col, alpha=0.82,
+                               linewidth=0, zorder=2)
+        hist_counts.append(counts)
+        ax.axvline(p95_stable, color='#aaaaaa', linewidth=0.7, linestyle=':',
+                   zorder=3)
+        ax.axvline(row['med'], color=col, linewidth=1.0, linestyle='--', zorder=4)
+        # Direct labels on the two reference lines (first/last panel only to cut clutter)
+        if tag == 'stable':
+            ax.text(p95_stable, 0.92, r'stable $p_{95}$',
+                    transform=ax.get_xaxis_transform(), fontsize=6, color='0.45',
+                    ha='left', va='top', rotation=90)
+        if tag == 'Dragon King':
+            ax.text(row['med'] + 0.01 * xmax, 0.92, 'median',
+                    transform=ax.get_xaxis_transform(), fontsize=6, color=col,
+                    ha='left', va='top', rotation=90)
+        # Mass-beyond callout (upper-left — keeps the micro-table clear below)
+        ax.text(0.04, 0.92, rf'{100 * row["frac"]:.0f}% $>p_{{95}}$',
+                transform=ax.transAxes, fontsize=7.5, color=col,
+                ha='left', va='top', fontweight='bold')
+        tag_bit = f' ({tag})' if tag != 'mid' else ''
+        ax.set_title(rf'$\lambda={lv:.2f}${tag_bit}',
+                     fontsize=9, pad=3, fontweight='normal',
                      color=C_VERM if tag == 'Dragon King' else C_INK)
         ax.set_xlim(0, xmax)
         ax.spines['bottom'].set_bounds(0, xmax)
 
     ymax = max(c.max() for c in hist_counts) if hist_counts else 1.0
-    rug_y = -0.06 * ymax
-    for ax, (_, data, _, col) in zip(axes, picks):
+    rug_y = -0.07 * ymax
+    for ax, (_, data, _, col, _) in zip(axes, picks):
+        data = np.asarray(data, dtype=float)
         ax.plot(data, np.full_like(data, rug_y, dtype=float),
-                '|', color=col, alpha=0.22, markersize=3, markeredgewidth=0.4)
+                '|', color=col, alpha=0.25, markersize=3.2, markeredgewidth=0.45)
 
-    for ax in axes:
-        ax.set_ylim(rug_y * 1.8, ymax * 1.08)
+    for i, ax in enumerate(axes):
+        ax.set_ylim(rug_y * 1.9, ymax * 1.12)
         ax.spines['left'].set_bounds(0, ymax)
+        if i > 0:
+            ax.tick_params(labelleft=False)
+            ax.spines['left'].set_visible(False)
 
-    axes[0].set_ylabel('Monte Carlo count', fontsize=8, labelpad=4)
+    axes[0].set_ylabel('count of networks', fontsize=8, labelpad=4)
     axes[1].set_xlabel('cascade size (fraction of network)', fontsize=8, labelpad=4)
 
-    fig.text(0.5, -0.02,
-             f'Shared scale.  Dotted: 95th percentile of the λ = {picks[0][0]:.2f} '
-             f'distribution.  Dashed + number: median.  Rug: one tick per run.  '
-             f'n = {n_mc} per panel.',
-             fontsize=6.5, color='#777777', ha='center')
+    # --- Micro-table (exact values; n is small: 3 cells) ---
+    fig.text(0.10, 0.325, r'Summary (shared $x$-scale):',
+             fontsize=7.5, color='0.3', ha='left', va='top')
+    headers = [r'$\lambda$', 'regime', 'median', 'mean',
+               r'% $>p_{95}^{\mathrm{stable}}$', 'max']
+    col_x = [0.10, 0.22, 0.40, 0.52, 0.66, 0.88]
+    for x, h in zip(col_x, headers):
+        fig.text(x, 0.285, h, fontsize=6.5, color='0.45', ha='left', va='top')
+    for r_i, row in enumerate(rows):
+        y = 0.250 - r_i * 0.032
+        vals = [
+            f'{row["lam"]:.2f}',
+            row['tag'],
+            f'{row["med"]:.2f}',
+            f'{row["mean"]:.2f}',
+            f'{100 * row["frac"]:.0f}%',
+            f'{row["mx"]:.2f}',
+        ]
+        for x, v in zip(col_x, vals):
+            fig.text(x, y, v, fontsize=7, color=row['col'], ha='left', va='top',
+                     fontweight='bold' if row['tag'] == 'Dragon King' else 'normal')
 
-    plt.tight_layout(rect=[0, 0.06, 1, 1])
-    path = _save_fig(fig, 'fig2_distributions', out_dir)
+    fig.text(0.10, 0.97,
+             r'Above the cliff, large cascades become common — not rare tail events',
+             fontsize=9, color=C_INK, ha='left', va='top')
+    _reading_guide(
+        fig,
+        f'Reading guide: sparkline = average cascade along $\\lambda$ '
+        f'(dots = panels). Histograms share one $x$-scale. '
+        f'Dotted line + pink band: beyond stable-regime $p_{{95}}={p95_stable:.2f}$. '
+        f'Dashed: median. Rug: one tick per run. Table: exact summaries. '
+        f'{n_mc} networks per panel.',
+        width=100,
+    )
+
+    os.makedirs(out_dir, exist_ok=True)
+    pdf_path = os.path.join(out_dir, 'fig2_distributions.pdf')
+    png_path = os.path.join(out_dir, 'fig2_distributions.png')
+    for path in (pdf_path, png_path):
+        fig.savefig(path, dpi=300, bbox_inches=None)
+    if os.path.basename(os.path.normpath(out_dir)) == 'figures':
+        fig.savefig(os.path.join(_REPO_ROOT, 'fig2_distributions.png'),
+                    dpi=300, bbox_inches=None)
     plt.close(fig)
-    return path
+    return pdf_path
 
 
 def plot_sensitivity(kappa_results: dict, out_dir: str = 'figures') -> str:
@@ -685,61 +813,80 @@ def plot_sensitivity(kappa_results: dict, out_dir: str = 'figures') -> str:
     """
     kappas = sorted(kappa_results.keys())
     linestyles = ['-', '--', ':', '-.']
-    # Same ink family + linestyle: grayscale-survivable; overlap is the result.
-    colors = [C_BLUE, C_GREEN, C_VERM, C_ORANGE]
+    colors = [C_BLUE, C_GREEN, C_ORANGE, C_SKY][:len(kappas)]
 
-    fig, ax = plt.subplots(figsize=(5.5, 3.4))
+    n = _n_runs(next(iter(kappa_results.values())))
+    all_mu = np.concatenate([kappa_results[k]['mean_cascade'] for k in kappas])
+    lstar = _find_lambda_star(
+        kappa_results[kappas[len(kappas) // 2]]['lambda_grid'],
+        kappa_results[kappas[len(kappas) // 2]]['mean_cascade'],
+    )
+    y_hi = float(all_mu.max()) * 1.06
+
+    fig = plt.figure(figsize=(5.8, 4.0))
+    ax = fig.add_axes([0.14, 0.28, 0.58, 0.52])
+    ax_gutter = fig.add_axes([0.74, 0.28, 0.24, 0.52])
+    ax_gutter.axis('off')
     _tufte_ax(ax)
 
     ends = []
     for kappa, col, ls in zip(kappas, colors, linestyles):
         res = kappa_results[kappa]
         lam = res['lambda_grid']
-        mu  = res['mean_cascade']
-        ax.plot(lam, mu, color=col, linestyle=ls, linewidth=1.25,
-                solid_capstyle='round')
-        ends.append(float(mu[-1]))
+        mu = res['mean_cascade']
+        ax.plot(lam, mu, color=col, linestyle=ls, linewidth=1.3,
+                solid_capstyle='round', zorder=2)
+        ends.append((kappa, float(mu[-1]), col, ls))
 
-    all_mu = np.concatenate([kappa_results[k]['mean_cascade'] for k in kappas])
-    lstar = _find_lambda_star(
-        kappa_results[kappas[len(kappas)//2]]['lambda_grid'],
-        kappa_results[kappas[len(kappas)//2]]['mean_cascade'],
-    )
-    ax.axvline(lstar, color=C_GRAY, linewidth=0.6, linestyle=':', zorder=0)
-    ax.text(lstar - 0.01, all_mu.max() * 0.06, f'λ* ≈ {lstar:.2f}',
-            color=C_GRAY, fontsize=7, ha='right', va='bottom')
+    ax.axvline(lstar, color=C_GRAY, linewidth=0.6, linestyle=':', zorder=1)
+    ax.text(lstar - 0.015, 0.97, rf'$\lambda^{{*}}\approx{lstar:.2f}$',
+            transform=ax.get_xaxis_transform(),
+            color=C_GRAY, fontsize=7, ha='right', va='top')
 
-    # In-panel key (no legend box) sitting in the stable-regime whitespace
-    key_y = all_mu.max() * 0.92
-    for i, (k, col, ls) in enumerate(zip(kappas, colors, linestyles)):
-        y = key_y - i * all_mu.max() * 0.09
-        ax.plot([0.04, 0.14], [y, y], color=col, linestyle=ls, linewidth=1.2,
-                clip_on=False)
-        ax.text(0.16, y, f'κ = {k:.2f}', color=col, fontsize=7.5,
-                va='center', ha='left')
+    ordered = sorted(ends, key=lambda t: t[1])
+    for rank, (k, v, col, ls) in enumerate(ordered):
+        y_ax = float(np.clip(v / y_hi + (rank - 0.5 * (len(ordered) - 1)) * 0.02,
+                             0.08, 0.92))
+        ax_gutter.plot([0.0, 0.12], [y_ax, y_ax], color=col, lw=1.3,
+                       linestyle=ls, transform=ax_gutter.transAxes, clip_on=False)
+        ax_gutter.text(0.16, y_ax, rf'$\kappa={k:.2f}$: ${v:.3f}$',
+                       transform=ax_gutter.transAxes, color=col,
+                       fontsize=7.5, va='center', ha='left')
 
-    dmu = max(ends) - min(ends)
-    ax.text(0.04, key_y - len(kappas) * all_mu.max() * 0.09,
-            f'max |Δμ| at λ = 1.0: {dmu:.3f}',
-            color=C_GRAY, fontsize=7, va='center')
+    dmu = max(e[1] for e in ends) - min(e[1] for e in ends)
+    ax_gutter.text(0.0, 0.02, rf'max $|\Delta\mu|={dmu:.3f}$',
+                   transform=ax_gutter.transAxes, color=C_GRAY,
+                   fontsize=7, va='bottom', ha='left')
 
-    n = _n_runs(next(iter(kappa_results.values())))
-    ax.set_xlabel('self-funding fraction λ', fontsize=9, labelpad=6)
+    ax.set_xlabel(r'self-funding fraction $\lambda$', fontsize=9, labelpad=6)
     ax.set_ylabel('mean cascade size\n(fraction of network)', fontsize=9, labelpad=6)
     ax.set_xlim(0, 1)
-    ax.set_ylim(0, all_mu.max() * 1.06)
-    ax.spines['left'].set_bounds(0, all_mu.max())
+    ax.set_ylim(0, y_hi)
+    ax.spines['left'].set_bounds(0, float(all_mu.max()))
     ax.spines['bottom'].set_bounds(0, 1)
 
-    fig.text(0.12, -0.01,
-             f'κ = investor concentration.  n = {n} runs per λ per κ.  '
-             'Curves coincide: transition location is insensitive to κ here.',
-             fontsize=6.5, color='#777777')
+    fig.text(0.14, 0.94,
+             r'Investor concentration barely moves the cliff',
+             fontsize=9, color=C_INK, ha='left', va='top')
+    _reading_guide(
+        fig,
+        f'Reading guide: each curve is a different investor-concentration '
+        f'level $\\kappa$ (color + line style). The curves sit on top of each '
+        f'other — the transition location does not care about $\\kappa$ here. '
+        f'Right labels: cascade size at $\\lambda=1$. {n} networks per point.',
+        x=0.14, width=88,
+    )
 
-    plt.tight_layout(rect=[0, 0.05, 1, 1])
-    path = _save_fig(fig, 'fig3_sensitivity', out_dir)
+    os.makedirs(out_dir, exist_ok=True)
+    pdf_path = os.path.join(out_dir, 'fig3_sensitivity.pdf')
+    png_path = os.path.join(out_dir, 'fig3_sensitivity.png')
+    for path in (pdf_path, png_path):
+        fig.savefig(path, dpi=300, bbox_inches=None)
+    if os.path.basename(os.path.normpath(out_dir)) == 'figures':
+        fig.savefig(os.path.join(_REPO_ROOT, 'fig3_sensitivity.png'),
+                    dpi=300, bbox_inches=None)
     plt.close(fig)
-    return path
+    return pdf_path
 
 
 def plot_density_sensitivity(density_results: dict, out_dir: str = 'figures') -> str:
@@ -749,25 +896,14 @@ def plot_density_sensitivity(density_results: dict, out_dir: str = 'figures') ->
     """
     densities = sorted(density_results.keys())
     linestyles = ['-', '--', '-.', ':']
-    # Sequential luminance (light → dark = low → high d) + linestyle.
-    # Floor is dark enough to survive grayscale / print.
-    colors = ['#67a9cf', '#2b8cbe', '#0868ac', '#084081']
+    # Okabe–Ito categorical hues + linestyle (grayscale backup).
+    colors = [C_SKY, C_BLUE, C_ORANGE, C_VERM][:len(densities)]
+    if len(densities) > len(colors):
+        colors = (colors + [C_GREEN, C_GRAY])[:len(densities)]
 
-    fig, ax = plt.subplots(figsize=(5.5, 3.4))
-    _tufte_ax(ax)
-
-    end_vals = []
-    for d, col, ls in zip(densities, colors, linestyles):
-        res = density_results[d]
-        lam = res['lambda_grid']
-        mu  = res['mean_cascade']
-        ax.plot(lam, mu, color=col, linestyle=ls, linewidth=1.3,
-                solid_capstyle='round')
-        end_vals.append((d, float(mu[-1]), col))
-
+    n = _n_runs(next(iter(density_results.values())))
     all_mu = np.concatenate([density_results[d]['mean_cascade'] for d in densities])
-    # λ* from the default-density curve if present, else the middle series
-    d_ref = 2.0 if 2.0 in density_results else densities[len(densities)//2]
+    d_ref = 2.0 if 2.0 in density_results else densities[len(densities) // 2]
     lstar = _find_lambda_star(density_results[d_ref]['lambda_grid'],
                               density_results[d_ref]['mean_cascade'])
     lonset_vals = [
@@ -776,34 +912,74 @@ def plot_density_sensitivity(density_results: dict, out_dir: str = 'figures') ->
                            density_results[d]['std_cascade'], k=2.0)
         for d in densities
     ]
-    ax.axvspan(min(lonset_vals), lstar, color='#999999', alpha=0.10, linewidth=0)
-    ax.axvline(lstar, color=C_GRAY, linewidth=0.6, linestyle=':', zorder=0)
-    ax.text(lstar - 0.01, all_mu.max() * 0.04, f'λ* ≈ {lstar:.2f}',
-            color=C_GRAY, fontsize=7, ha='right', va='bottom')
+    lonset_lo = min(lonset_vals)
+    y_hi = float(all_mu.max()) * 1.06
 
-    # Labels live just past λ = 1 (clip_on=False) so the axis itself stops at 1
-    for d, v, col in end_vals:
-        ax.text(1.02, v, f'd = {d:.0f}   {v:.2f}',
-                color=col, fontsize=7.5, va='center', ha='left', clip_on=False)
+    # Title | panel + gutter | footer  (end values live only in the gutter)
+    fig = plt.figure(figsize=(6.2, 4.0))
+    ax = fig.add_axes([0.12, 0.28, 0.62, 0.54])
+    ax_gutter = fig.add_axes([0.75, 0.28, 0.23, 0.54])
+    ax_gutter.axis('off')
+    _tufte_ax(ax)
 
-    n = _n_runs(next(iter(density_results.values())))
-    ax.set_xlabel('self-funding fraction λ', fontsize=9, labelpad=6)
+    end_vals = []
+    for d, col, ls in zip(densities, colors, linestyles):
+        res = density_results[d]
+        lam = res['lambda_grid']
+        mu = res['mean_cascade']
+        ax.plot(lam, mu, color=col, linestyle=ls, linewidth=1.35,
+                solid_capstyle='round', zorder=2)
+        end_vals.append((d, float(mu[-1]), col, ls))
+
+    ax.axvspan(lonset_lo, lstar, color='#999999', alpha=0.10, linewidth=0, zorder=0)
+    ax.axvline(lstar, color=C_GRAY, linewidth=0.6, linestyle=':', zorder=1)
+    ax.text(lstar - 0.015, 0.97, rf'$\lambda^{{*}}\approx{lstar:.2f}$',
+            transform=ax.get_xaxis_transform(),
+            color=C_GRAY, fontsize=7, ha='right', va='top')
+
+    # Direct labels in gutter, sorted by final cascade (no collision)
+    ordered = sorted(end_vals, key=lambda t: t[1])
+    for rank, (d, v, col, ls) in enumerate(ordered):
+        y_ax = (v - 0) / y_hi if y_hi > 0 else 0.5
+        # slight stagger if values are close
+        y_ax = float(np.clip(y_ax + (rank - 0.5 * (len(ordered) - 1)) * 0.015,
+                             0.06, 0.94))
+        ax_gutter.plot([0.0, 0.10], [y_ax, y_ax], color=col, lw=1.3,
+                       linestyle=ls, transform=ax_gutter.transAxes, clip_on=False)
+        ax_gutter.text(0.14, y_ax, rf'$d={d:.0f}$: ${v:.2f}$',
+                       transform=ax_gutter.transAxes, color=col,
+                       fontsize=7.5, va='center', ha='left')
+
+    ax.set_xlabel(r'self-funding fraction $\lambda$', fontsize=9, labelpad=6)
     ax.set_ylabel('mean cascade size\n(fraction of network)', fontsize=9, labelpad=6)
     ax.set_xlim(0, 1)
-    ax.set_ylim(0, all_mu.max() * 1.06)
-    ax.spines['left'].set_bounds(0, all_mu.max())
+    ax.set_ylim(0, y_hi)
+    ax.spines['left'].set_bounds(0, float(all_mu.max()))
     ax.spines['bottom'].set_bounds(0, 1)
 
-    fig.text(0.12, -0.01,
-             f'd = expected bank-connections per fund.  '
-             f'n = {n} runs per λ per d.  '
-             'Grey window: [min λ_onset, λ*].  Right numbers: μ at λ = 1.',
-             fontsize=6.5, color='#777777')
+    fig.text(0.12, 0.94,
+             r'Density moves how big the crash is — not where the cliff sits',
+             fontsize=9, color=C_INK, ha='left', va='top')
+    _reading_guide(
+        fig,
+        f'Reading guide: each curve is a denser bank–fund network '
+        f'(color + line style = density $d$). All curves break near the same '
+        f'$\\lambda^{{*}}$; only the height at $\\lambda=1$ changes '
+        f'(numbers at right). Grey band: transition window. '
+        f'{n} simulated networks per point.',
+        x=0.12, width=92,
+    )
 
-    plt.tight_layout(rect=[0, 0.05, 1, 1])
-    path = _save_fig(fig, 'fig5_density_sensitivity', out_dir)
+    os.makedirs(out_dir, exist_ok=True)
+    pdf_path = os.path.join(out_dir, 'fig5_density_sensitivity.pdf')
+    png_path = os.path.join(out_dir, 'fig5_density_sensitivity.png')
+    fig.savefig(pdf_path, dpi=300, bbox_inches=None)
+    fig.savefig(png_path, dpi=300, bbox_inches=None)
+    if os.path.basename(os.path.normpath(out_dir)) == 'figures':
+        fig.savefig(os.path.join(_REPO_ROOT, 'fig5_density_sensitivity.png'),
+                    dpi=300, bbox_inches=None)
     plt.close(fig)
-    return path
+    return pdf_path
 
 
 def plot_lppls_illustration(sweep_result: dict, out_dir: str = 'figures') -> str:
@@ -831,32 +1007,31 @@ def plot_lppls_illustration(sweep_result: dict, out_dir: str = 'figures') -> str
     price_env = price_env * scale
     tau = t / tc
 
-    fig, ax = plt.subplots(figsize=(5.5, 3.4))
+    fig = plt.figure(figsize=(5.6, 3.9))
+    ax = fig.add_axes([0.14, 0.24, 0.82, 0.58])
     _tufte_ax(ax)
 
-    ax.plot(tau, price_env, color='#aaaaaa', linewidth=0.9, linestyle='--',
+    ax.plot(tau, price_env, color=C_GRAY, linewidth=0.95, linestyle='--',
             solid_capstyle='round', zorder=1)
-    ax.plot(tau, price, color=C_BLUE, linewidth=1.3, solid_capstyle='round',
+    ax.plot(tau, price, color=C_BLUE, linewidth=1.35, solid_capstyle='round',
             zorder=2)
 
-    # Envelope label sits on the early dashed line, well left of the shiver callout
     env_i = int(0.28 * len(tau))
     ax.text(tau[env_i], price_env[env_i] + (price.max() - price.min()) * 0.06,
-            'envelope (C = 0)', color='#888888', fontsize=7,
+            r'envelope ($C=0$)', color=C_GRAY, fontsize=7,
             ha='center', va='bottom')
 
-    # Shiver: largest residual at t/t_c > 0.70, labeled in the upper whitespace
     resid = price - price_env
     late = slice(int(0.70 * len(tau)), None)
     shiver_idx = late.start + int(np.argmax(np.abs(resid[late])))
     ax.annotate('log-periodic\noscillation',
                 xy=(tau[shiver_idx], price[shiver_idx]),
-                xytext=(0.52, price.max() * 0.78),
+                xytext=(0.50, price.max() * 0.72),
                 fontsize=7, color=C_GRAY,
-                arrowprops=dict(arrowstyle='->', color='#888888',
+                arrowprops=dict(arrowstyle='->', color=C_GRAY,
                                 lw=0.7, connectionstyle='arc3,rad=-0.15'))
 
-    ax.set_xlabel('t / t_c   (synthetic coordinate; t_c is not estimated)',
+    ax.set_xlabel(r'$t/t_c$  (synthetic; $t_c$ is not estimated)',
                   fontsize=9, labelpad=6)
     ax.set_ylabel('index (start = 100)', fontsize=9, labelpad=6)
     ax.set_xlim(tau[0], tau[-1])
@@ -865,20 +1040,31 @@ def plot_lppls_illustration(sweep_result: dict, out_dir: str = 'figures') -> str
     ax.spines['left'].set_bounds(price.min(), price.max())
     ax.spines['bottom'].set_bounds(tau[0], tau[-1])
 
-    ax.text(0.02, 0.97,
-            'Synthetic illustration — no empirical fit, no t_c prediction.',
-            transform=ax.transAxes, fontsize=7, color=C_VERM,
-            va='top', ha='left')
+    fig.text(0.14, 0.92,
+             r'Synthetic LPPLS shape — not a fit, not a forecast',
+             fontsize=9, color=C_INK, ha='left', va='top')
+    fig.text(0.14, 0.865,
+             r'Caveat: no empirical SRT series, no $t_c$ prediction.',
+             fontsize=7, color=C_VERM, ha='left', va='top')
+    _reading_guide(
+        fig,
+        r'Reading guide: the solid curve is a made-up price path with '
+        r'accelerating growth and wiggles; the dashed curve is the same '
+        r'growth without the wiggles. Horizontal axis is a fake time scale. '
+        r'This figure teaches a shape, not where the real SRT market sits.',
+        x=0.14, width=88,
+    )
 
-    fig.text(0.12, -0.01,
-             r'$\ln p = A + B(t_c-t)^{m}\,[1 + C\cos(\omega\ln(t_c-t)+\phi)]$.  '
-             'Dashed: same law with C = 0.  Not a fit to SRT issuance.',
-             fontsize=6.5, color='#777777')
-
-    plt.tight_layout(rect=[0, 0.05, 1, 1])
-    path = _save_fig(fig, 'fig4_lppls_illustration', out_dir)
+    os.makedirs(out_dir, exist_ok=True)
+    pdf_path = os.path.join(out_dir, 'fig4_lppls_illustration.pdf')
+    png_path = os.path.join(out_dir, 'fig4_lppls_illustration.png')
+    fig.savefig(pdf_path, dpi=300, bbox_inches=None)
+    fig.savefig(png_path, dpi=300, bbox_inches=None)
+    if os.path.basename(os.path.normpath(out_dir)) == 'figures':
+        fig.savefig(os.path.join(_REPO_ROOT, 'fig4_lppls_illustration.png'),
+                    dpi=300, bbox_inches=None)
     plt.close(fig)
-    return path
+    return pdf_path
 
 
 def plot_tranche_comparison(sweep_default: dict, sweep_empirical: dict,
@@ -899,64 +1085,80 @@ def plot_tranche_comparison(sweep_default: dict, sweep_empirical: dict,
     lon15 = _find_lambda_onset(lam15, mu15, sweep_empirical['std_cascade'], k=2.0)
     lstar = _find_lambda_star(lam08, mu08)
     n = _n_runs(sweep_default)
-    # Pointwise |Δ| on the shared grid (both sweeps use the same λ grid)
     dmu = float(np.max(np.abs(mu08 - mu15)))
+    y_top = max((mu08 + sd08).max(), mu15.max()) * 1.04
 
-    fig, ax = plt.subplots(figsize=(5.5, 3.4))
+    fig = plt.figure(figsize=(5.8, 4.0))
+    ax = fig.add_axes([0.14, 0.28, 0.82, 0.52])
     _tufte_ax(ax)
 
-    # One band only — the two SDs overlap; a second fill is redundant ink
     ax.fill_between(lam08, np.clip(mu08 - sd08, 0, None), mu08 + sd08,
                     color=C_BLUE, alpha=0.10, linewidth=0, zorder=1)
     ax.plot(lam08, mu08, color=C_BLUE, linewidth=1.4, linestyle='-',
-            solid_capstyle='round', zorder=2)
+            solid_capstyle='round', zorder=2, label=r'$\delta=0.08$ (paper)')
     ax.plot(lam15, mu15, color=C_VERM, linewidth=1.3, linestyle='--',
-            solid_capstyle='round', zorder=3)
+            solid_capstyle='round', zorder=3, label=r'$\delta=0.15$ (empirical median)')
 
-    # Onset tightening: two marks. At δ = 0.15 onset collapses onto λ*.
     ax.axvline(lon08, color=C_BLUE, linewidth=0.6, linestyle=':', zorder=1)
     ax.axvline(lon15, color=C_VERM, linewidth=0.6, linestyle=':', zorder=1)
-    ax.text(lon08 - 0.01, (mu08 + sd08).max() * 0.06,
-            f'λ_onset(δ=0.08) ≈ {lon08:.2f}',
-            color=C_BLUE, fontsize=7, ha='right', va='bottom')
-    if abs(lon15 - lstar) < 1e-9:
-        onset15_txt = f'λ_onset = λ* ≈ {lon15:.2f}  (δ=0.15)'
-    else:
-        onset15_txt = f'λ_onset(δ=0.15) ≈ {lon15:.2f}'
-    ax.text(min(lon15 + 0.012, 0.99), (mu08 + sd08).max() * 0.06,
-            onset15_txt, color=C_VERM, fontsize=7, ha='left', va='bottom')
 
-    # In-panel key + the invariance number
-    y_key = (mu08 + sd08).max() * 0.92
-    ax.plot([0.04, 0.14], [y_key, y_key], color=C_BLUE, lw=1.3)
-    ax.text(0.16, y_key, 'δ = 0.08  (paper default)',
+    # Direct labels near series ends (stable whitespace left of cliff)
+    ax.plot([0.05, 0.14], [y_top * 0.88, y_top * 0.88], color=C_BLUE, lw=1.3)
+    ax.text(0.16, y_top * 0.88, r'$\delta=0.08$ (paper default)',
             color=C_BLUE, fontsize=7.5, va='center')
-    ax.plot([0.04, 0.14], [y_key * 0.90, y_key * 0.90],
+    ax.plot([0.05, 0.14], [y_top * 0.78, y_top * 0.78],
             color=C_VERM, lw=1.2, linestyle='--')
-    ax.text(0.16, y_key * 0.90, 'δ = 0.15  (empirical median)',
+    ax.text(0.16, y_top * 0.78, r'$\delta=0.15$ (empirical median)',
             color=C_VERM, fontsize=7.5, va='center')
-    ax.text(0.04, y_key * 0.78,
-            f'max |Δμ| = {dmu:.3f}   μ(λ=1): {mu08[-1]:.3f} vs {mu15[-1]:.3f}',
-            color=C_GRAY, fontsize=7, va='center')
+    ax.text(0.05, y_top * 0.66,
+            rf'max $|\Delta\mu|={dmu:.3f}$'
+            + '\n'
+            + rf'$\mu(\lambda{{=}}1)$: ${mu08[-1]:.3f}$ vs ${mu15[-1]:.3f}$',
+            color=C_GRAY, fontsize=7, va='top')
 
-    ax.set_xlabel('self-funding fraction λ', fontsize=9, labelpad=6)
+    ax.set_xlabel(r'self-funding fraction $\lambda$', fontsize=9, labelpad=6)
     ax.set_ylabel('mean cascade size\n(fraction of network)', fontsize=9, labelpad=6)
-    y_top = max((mu08 + sd08).max(), mu15.max()) * 1.04
     ax.set_xlim(0, 1)
     ax.set_ylim(0, y_top)
     ax.spines['left'].set_bounds(0, max(mu08.max(), mu15.max()))
     ax.spines['bottom'].set_bounds(0, 1)
 
-    fig.text(0.12, -0.01,
-             f'n = {n} runs per λ per δ.  '
-             'δ = 0.15 is the median junior-tranche thickness, '
-             'Osberghaus & Schepens (2026).  Band: ±1 SD at δ = 0.08.',
-             fontsize=6.5, color='#777777')
+    fig.text(0.14, 0.94,
+             r'Thicker junior tranche: same cliff height, tighter onset',
+             fontsize=9, color=C_INK, ha='left', va='top')
+    if abs(lon15 - lstar) < 1e-9:
+        onset_line = (
+            rf'Onset marks: $\lambda_{{\mathrm{{onset}}}}(\delta{{=}}0.08)'
+            rf'\approx{lon08:.2f}$ (blue); '
+            rf'at $\delta{{=}}0.15$, onset collapses onto '
+            rf'$\lambda^{{*}}\approx{lon15:.2f}$ (vermillion).'
+        )
+    else:
+        onset_line = (
+            rf'Onset marks: $\delta{{=}}0.08\rightarrow{lon08:.2f}$; '
+            rf'$\delta{{=}}0.15\rightarrow{lon15:.2f}$.'
+        )
+    fig.text(0.14, 0.895, onset_line, fontsize=7, color='0.3', ha='left', va='top')
+    _reading_guide(
+        fig,
+        f'Reading guide: blue is the paper default tranche thickness; '
+        f'vermillion dashed is the empirical median ($\\delta=0.15$). '
+        f'The curves nearly overlap (invariance). Dotted verticals mark '
+        f'onset for each $\\delta$. '
+        f'Band: $\\pm 1$ SD for $\\delta=0.08$. {n} networks per point.',
+        x=0.14, width=90,
+    )
 
-    plt.tight_layout(rect=[0, 0.05, 1, 1])
-    path = _save_fig(fig, 'fig6_tranche_comparison', out_dir)
+    os.makedirs(out_dir, exist_ok=True)
+    pdf_path = os.path.join(out_dir, 'fig6_tranche_comparison.pdf')
+    png_path = os.path.join(out_dir, 'fig6_tranche_comparison.png')
+    for path in (pdf_path, png_path):
+        fig.savefig(path, dpi=300, bbox_inches=None)
+    if os.path.basename(os.path.normpath(out_dir)) == 'figures':
+        fig.savefig(os.path.join(_REPO_ROOT, 'fig6_tranche_comparison.png'),
+                    dpi=300, bbox_inches=None)
     plt.close(fig)
-    return path
+    return pdf_path
 
 
 def plot_all(sweep_result: dict, kappa_results: dict,

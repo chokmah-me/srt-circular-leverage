@@ -10,7 +10,8 @@ Paper and software are **separate concepts**. Do not merge the PDF and the code 
 | Software **concept** | 19651936 | [10.5281/zenodo.19651936](https://doi.org/10.5281/zenodo.19651936) | |
 | Software **v1.1** | 19651937 | [10.5281/zenodo.19651937](https://doi.org/10.5281/zenodo.19651937) | Related as `isSupplementedBy` |
 
-GitHub: https://github.com/chokmah-me/srt-circular-leverage
+GitHub: https://github.com/chokmah-me/srt-circular-leverage  
+**OSF (legacy paper mirror):** https://osf.io/xm9zg/ (DOI [10.17605/OSF.IO/XM9ZG](https://doi.org/10.17605/OSF.IO/XM9ZG)) — refreshed for v2; do not open a new child. Duplicate title sibling https://osf.io/64tfm/ also refreshed to v2.
 
 **Repo companion (not a Zenodo version):** `ROBUSTNESS_CHECK_dyb-2026k-v2.md` — stress test of v2 claims (22 frozen rows). Zenodo record [21995468](https://zenodo.org/records/21995468) notes + `related_identifiers` link to the GitHub blob (same DOI; files locked without a new version). Does **not** change concept DOI `19632277` or v2 pin `21995468`.
 

@@ -2,6 +2,13 @@
 
 All notable changes to this companion repository are documented here.
 
+## [Unreleased] — 2026-09-04 — figure restyle (repo-only)
+
+- Restyled Figures 1–6 (PNG/PDF): in-figure titles, reading guides, reserved title/footer bands
+- Updated `srt_simulation.py` figure pipeline to match; science path and claims unchanged
+- Repo companion only — no new Zenodo paper version; Zenodo PDF pin remains v2 `21995468`
+- `ZENODO.md`: record legacy OSF paper mirrors refreshed for v2
+
 ## [Unreleased] — 2026-08-18 — robustness check (v2 companion)
 
 - Added `ROBUSTNESS_CHECK_dyb-2026k-v2.md`: full-surface stress test of paper v2 (22 frozen rows; own-draft mode)
