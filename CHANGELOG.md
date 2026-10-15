@@ -11,6 +11,7 @@ All notable changes to this companion repository are documented here.
 - `srt_simulation.py`: `COCKPIT_CURRENT` updated to Q3 2026 readings and thresholds; new `COCKPIT_AS_OF`; CSV columns now `current_value`, `threshold`, `as_of` (was `current_value_q1_2026`). Readings are display only and do not enter `lambda_trigger`, `lead_fraction` or rank
 - Added `bdc_dispersion.py` (Metric 2) and `results/metric2_bdc_dispersion.csv`; market deps in `requirements-market.txt`, kept out of `requirements.txt` and out of `verify_srt_claims.py`
 - Added Figure 7 (`plot_metric2_sparkline.py`): Metric 2 sparkline through Q3 2026, 1.25x / 2.0x reference lines. Simulation Figures 1-6 unchanged
+- Alignment pass: Metric 5 red line frozen at $5.7T (2.0 × $2.85T), matching paper and VERIFY_LOG; patch $5.8T dropped. §6 no longer says metrics update monthly. Metric 6 30/50 bp lines labeled as companion tripwire, not the Q3 rule. `bdc_dispersion.py` drops the in-progress quarter instead of writing a Q4-partial row dated 2026-12-31
 
 ### Restated (v2 readings changed under v2.1 rules)
 

@@ -8,6 +8,8 @@ Rev 3 (14 Oct 2026, 21:35): Metric 2 computed with `bdc_dispersion.py` (measure 
 
 Rev 4 (15 Oct 2026): decision D2 = (a). Metric 5 gets a pinned level rule against a 2023-2024 ISDA baseline, set before ISDA's Q3 data exists. Q3 cell = PENDING; Q2 restated from RED to AMBER under the rule.
 
+Rev 5 (15 Oct 2026): align leftover seams with the paper. Metric 5 red line is $5.7T (2.0 × verified median $2.85T), not the patch's $5.8T from 2.0 × $2.9T rounded. Drop “updated at least monthly” from §6 (Metrics 1–5 are quarterly scores). Metric 6 30/50 bp lines stay in companion code as a tripwire, not the Q3 rule.
+
 **Headline count (Q3 2026): 3 RED / 1 AMBER / 1 GREEN / 1 PENDING.** Metric 2 (BDC dispersion) reads amber; Metric 5 (index CDS) awaits ISDA's Q3 review, due mid-November.
 
 Legend: `OLD` = exact anchor in v2. `NEW` = replacement. `[VERIFY]` = upgrade to a primary source before shipping.
@@ -62,6 +64,8 @@ Four developments between August and October 2026 bear on the loop.
 
 P5b. Caption: replace `Updated in v2 from Q1 to Q2/Q3 2026. Five of six metrics now show red, up from four in v1. Metric 4 (CLO spreads) moved from amber/red to red.` with `Updated in v2.1 to Q3 2026. Metric 2 reads amber; Metric 5 is pending ISDA's Q3 review (mid-November). *Q2 readings for Metrics 2 and 5 are restated from red (v2, judged by eye) to amber under the numeric rules pinned in v2.1; both Q1 readings are red under either method.`
 
+P5c. §6 intro, replace `Each metric is free, updated at least monthly, and connected to either λ or κ via the model.` with `Each metric is free and connected to either λ or κ via the model. Metrics 1–5 are scored quarterly (Metric 5 waits on ISDA's SwapsInfo review); Metric 6 is a daily funding print.`
+
 Note: the v2 column header "Q2/Q3 2026" becomes "Q2 2026", since v2 data ran through July/August.
 
 ## P6. Metric 1, append
@@ -97,13 +101,13 @@ P9b. Metric 5, replace the v2 Q1 source. OLD: `Q1 2026 CDS index volume reached 
 
 Insert after the P9 text:
 
-`v2.1 pins the reading. The quarterly value is ISDA SwapsInfo index credit derivatives traded notional (US-reported). Status compares that level to the 2023-2024 median quarter, about $2.9 trillion: red above 2.0 times ($5.8 trillion), amber above 1.25 times ($3.6 trillion). A level rule avoids the base effect in year-on-year growth; Q2 2025 contained the April 2025 tariff shock. Readings: Q1 2026 $7.4 trillion (2.6 times, red); Q2 2026 $5.1 trillion (1.8 times, amber). The index market has grown since 2024 (every 2025 quarter sits near 1.8 times baseline), so this rule leans toward amber in calm periods. FINDX trading is reported as context, not scored.`
+`v2.1 pins the reading. The quarterly value is ISDA SwapsInfo index credit derivatives traded notional (US-reported). Status compares that level to the 2023-2024 median quarter, about $2.85 trillion: red above 2.0 times ($5.7 trillion), amber above 1.25 times ($3.6 trillion). A level rule avoids the base effect in year-on-year growth; Q2 2025 contained the April 2025 tariff shock. Readings: Q1 2026 $7.4 trillion (2.6 times, red); Q2 2026 $5.1 trillion (1.8 times, amber). The index market has grown since 2024 (every 2025 quarter sits near 1.8 times baseline), so this rule leans toward amber in calm periods. FINDX trading is reported as context, not scored.`
 
-Baseline derivation [VERIFY: replace with exact quarterly figures from the ISDA PDFs]: Q1 2023 3.7, Q2 2023 2.2, Q1 2024 2.9, Q2 2024 2.9 (from Q1 and H1 releases); Q3/Q4 2023-2024 back-solved from rounded YTD and full-year growth rates, so about ±$0.2T each. Median $2.9T.
+Baseline (VERIFY_LOG_v2.1.md, contemporaneous quarterly PDFs): 2023 $3.7, 2.2, 2.7, 2.5; 2024 $2.9, 2.8, 3.8, 3.5. Median $2.85T. Red line is 2.0 × 2.85 = $5.7T (not 2.0 × $2.9T rounded = $5.8T). Amber 1.25 × 2.85 = $3.56T, printed $3.6T. Q1 $7.4T and Q2 $5.1T do not sit on that seam.
 
 ## P10. Metric 6, replace `The current spread of approximately 10-15 basis points is within normal bounds.` with
 
-`In early October 2026, SOFR printed at or a few basis points below IORB (3.87% to 3.90%), with the 99th percentile about 5bp above IORB. This holds after the Federal Reserve raised rates on 16 September 2026. Funding markets show no stress.`
+`In early October 2026, SOFR printed at or a few basis points below IORB (3.87% to 3.90%), with the 99th percentile about 5bp above IORB. This holds after the Federal Reserve raised rates on 16 September 2026. Funding markets show no stress. The companion code flags a SOFR–IORB or SOFR–OIS gap above 30 basis points sustained, or 50 basis points once, as a tripwire; those lines are not the Q3 status rule.`
 
 ## P11. "The SOFR-OIS result", last two sentences
 
@@ -156,7 +160,7 @@ NEW: `The comment period closed on 18 June 2026; as of October 2026 no final rul
 ## Open items before ship
 
 1. Metric 2: done (AMBER). Commit `bdc_dispersion.py` and `results/metric2_bdc_dispersion.csv`; keep both out of `verify_srt_claims.py` (live data, not seeded).
-2. Metric 5: PENDING. Apply P9c when ISDA's Q3 SwapsInfo review lands (expect mid-November). Q3 above $5.8T = red, above $3.6T = amber. Decide now whether v2.1 ships before that (with PENDING) or waits.
+2. Metric 5: PENDING. Apply P9c when ISDA's Q3 SwapsInfo review lands (expect mid-November). Q3 above $5.7T = red, above $3.6T = amber, else green. Decide now whether v2.1 ships before that (with PENDING) or waits.
 3. Clear every `[VERIFY]`.
 4. Cockpit CSV: the readings are hard-coded in `srt_simulation.py` (`COCKPIT_CURRENT`), so a hand-edited CSV is overwritten on the next run. Apply `cockpit_q3_2026.diff` (`git apply cockpit_q3_2026.diff`), then regenerate. It also drops the old Metric 2 code threshold ("std dev > 15%"), which contradicted P6b. README: fix "Q1 snapshot" and the 5/1 count.
 5. CHANGELOG entry; Zenodo v2.1 mint per ZENODO.md.

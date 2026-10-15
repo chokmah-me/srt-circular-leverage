@@ -1,14 +1,16 @@
 """Metric 2: BDC price dispersion, computed two ways, with a calm baseline.
 
-A: cross-sectional std of quarterly total returns (proposed v2.1 definition;
+A: cross-sectional std of quarterly total returns (robustness check;
    no base-date dependence).
 B: median daily cross-sectional std of prices normalized to each quarter's
-   first close (Kimi's measure, made base-date-safe by re-basing per quarter).
+   first close (v2.1 scored measure, re-based per quarter).
 
-Status rule (proposed, judgment-based like the other cockpit weights):
-   RED   if value > 2x the 2025 median
-   AMBER if value > 1.25x the 2025 median
+Status rule (judgment-based, like the other cockpit weights), vs the
+2023-2024 median:
+   RED   if value > 2.0x
+   AMBER if value > 1.25x
    GREEN otherwise
+The in-progress quarter is dropped (QE labels are quarter-end).
 Run: pip install yfinance pandas   then: python bdc_dispersion.py
 """
 import pandas as pd
@@ -32,6 +34,8 @@ B = px.groupby(pd.Grouper(freq="QE")).apply(b_quarter)
 
 out = pd.DataFrame({"A_ret_std": A, "B_norm_px_med": B}).dropna(how="all")
 out = out[out.index > "2023-01-01"]  # drop the 1-day stub quarter
+last_px = px.index.max()
+out = out[out.index <= last_px]  # drop in-progress quarter (QE = quarter-end)
 BASE_YEARS = [2023, 2024]  # pre-stress; 2025 already had Q2-Q3 stress
 base = out[out.index.year.isin(BASE_YEARS)].median()
 print("2025 median for comparison:\n",
@@ -46,4 +50,3 @@ for col in ["A_ret_std", "B_norm_px_med"]:
 print("2023-2024 baseline medians:\n", base.round(4).to_string(), "\n")
 print(out.round(4).to_string())
 out.round(6).to_csv("results/metric2_bdc_dispersion.csv")
-# Ignore the last row (Q4 2026 partial).

@@ -17,9 +17,9 @@ Series: ISDA SwapsInfo, **index credit derivatives traded notional reported unde
 | Q3 2024 | 3.8 | [Q3 2024 PDF](https://www.isda.org/a/pAQgE/SwapsInfo-Third-Quarter-of-2024-and-Year-to-September-30-2024-Review.pdf): "increased by 40.7% to $3.8 trillion" |
 | Q4 2024 | 3.5 | [FY 2024 PDF](https://www.isda.org/a/jYNgE/SwapsInfo-Full-Year-2024-and-the-Fourth-Quarter-of-2024.pdf): "grew by 39.3% to $3.5 trillion ... from $2.5 trillion" |
 
-Sorted: 2.2, 2.5, 2.7, 2.8, 2.9, 3.5, 3.7, 3.8. Median = (2.8 + 2.9) / 2 = **$2.85T**, which rounds to the paper's **~$2.9T**.
+Sorted: 2.2, 2.5, 2.7, 2.8, 2.9, 3.5, 3.7, 3.8. Median = (2.8 + 2.9) / 2 = **$2.85T**. Paper and patch pin this figure (not the earlier ~$2.9T round).
 
-Patch back-solve had Q2 2024 as 2.9. The Q2 2024 PDF states **2.8**. One-decimal rounding also means Q1+Q2 2024 (2.9+2.8=5.7) vs H1 2024 published 5.8. Thresholds $5.8T / $3.6T (2.0x / 1.25x of 2.9) do not move if the median stays 2.85-2.9.
+Patch rev 4 back-solve had Q2 2024 as 2.9. The Q2 2024 PDF states **2.8**. One-decimal rounding also means Q1+Q2 2024 (2.9+2.8=5.7) vs H1 2024 published 5.8. Pinned rule uses 2.0 × 2.85 = **$5.7T** red and 1.25 × 2.85 = $3.56T (printed **$3.6T**) amber. The superseded 2.0 × $2.9T = $5.8T line is not used. Q1 $7.4T and Q2 $5.1T do not sit on the 5.7–5.8 seam.
 
 2026 readings (already in the paper; checked here):
 
@@ -37,7 +37,7 @@ Patch back-solve had Q2 2024 as 2.9. The Q2 2024 PDF states **2.8**. One-decimal
 | P6 OBDC II halt | Blue Owl halted redemptions from OBDC II entirely earlier in 2026 and began selling assets | SEC hits show an unsolicited Cox/Saba tender (March 2026), a 30%+ return-of-capital, and asset sales; not a filing that says the company halted its own repurchase program | e.g. https://www.sec.gov/Archives/edgar/data/1655887/000119312526096344/d120548dex991.htm | no / incomplete; keep tag |
 | P7 non-accrual 2.8% | BDC median non-accrual 2.8% in Q2 2026, highest since 2017 | not opened this pass | leave [VERIFY: primary] | not checked |
 | P7 WSJ PIK -46% | PIK provisions in new loans fell about 46% (WSJ, August 2026) | not opened this pass | leave [VERIFY] | not checked |
-| P9c ISDA baseline | eight 2023-2024 quarters, median ~$2.9T | see table above | median $2.85T; Q2 2024 is 2.8 not the patch's 2.9 | yes on median; Q2 2024 one-tenth off |
+| P9c ISDA baseline | eight 2023-2024 quarters, median $2.85T; red $5.7T | see table above | median $2.85T; Q2 2024 is 2.8 | yes; red line is $5.7T (2.0 × 2.85), not $5.8T |
 | P14 Basel | comment period closed 18 June 2026; no final rule as of October 2026 | not opened this pass | leave [VERIFY at ship date] | not checked |
 | P15 FCA URL | CP26/35, 8 October 2026, 90-day notice | https://www.fca.org.uk/publication/consultation/cp26-35.pdf ; press https://www.fca.org.uk/news/press-releases/new-rules-make-long-term-investment-funds-clearer (first published 08/10/2026) | CP26/35 *Fair redemption terms for authorised funds investing in illiquid assets*: FIIA NURS, dealing no more than monthly, notice at least 90 days | yes |
 | P15 PE Wire URL | Cliffwater Q3 cap 5% vs ~16% requested | not opened this pass | leave [VERIFY: URL] | not checked |
@@ -45,6 +45,6 @@ Patch back-solve had Q2 2024 as 2.9. The Q2 2024 PDF states **2.8**. One-decimal
 
 ## Notes for the human
 
-- Paper was not edited from this log.
+- Paper was not edited from this log. A later alignment pass (patch rev 5) set paper, patch, and companion CSV to the $2.85T / $5.7T / $3.6T rule already implied here.
 - Metric 5 Q3 cell stays PENDING until the Q3 2026 SwapsInfo review.
-- If the baseline is restated to 2.85, 1.25x = $3.56T and 2.0x = $5.70T. Q2 2026 $5.1T is still amber; Q1 $7.4T is still red.
+- Pinned: 1.25x = $3.56T printed $3.6T amber; 2.0x = $5.70T red. Q2 2026 $5.1T is amber; Q1 $7.4T is red. A Q3 print in 5.7–5.8 would be red under the pinned rule.

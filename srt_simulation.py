@@ -1225,7 +1225,8 @@ COCKPIT_CURRENT = {
                      'after the 16 Sep 2026 hike',
         'source':    'NY Fed; FRED SOFR series (Oct 2026)',
         'signal':    'GREEN',
-        'threshold': '> 30 bps = emerging stress; > 50 bps = acute',
+        'threshold': 'Q3 status: SOFR at/below IORB. Tripwire (not the table '
+                     'rule): > 30 bps sustained or > 50 bps once',
     },
     'pik_ratio': {
         'label':     'PIK ratio in BDC filings (bad PIK)',
@@ -1249,8 +1250,8 @@ COCKPIT_CURRENT = {
                      '(2.60x). Q3 pending ISDA (mid-Nov). FINDX thin.',
         'source':    'ISDA SwapsInfo (May, Aug 2026); IFR (May 2026)',
         'signal':    'PENDING',
-        'threshold': 'Quarterly index notional > 1.25x 2023-24 median = AMBER; '
-                     '> 2.0x = RED',
+        'threshold': 'Quarterly index notional > 1.25x 2023-24 median ($3.6T) '
+                     '= AMBER; > 2.0x ($5.7T) = RED',
     },
 }
 
