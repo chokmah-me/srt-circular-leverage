@@ -595,26 +595,28 @@ def plot_phase_transition(sweep_result: dict, out_dir: str = 'figures') -> str:
     ax.axvline(lonset, color=C_GRAY, linewidth=0.6, linestyle=':', zorder=1)
     ax.axvline(lstar,  color=C_VERM, linewidth=0.7, linestyle=':', zorder=1)
 
-    # Threshold labels in the top margin of the axes (not on the curve)
+    # Threshold labels in the top margin — keep fully inside axes (ha toward center)
     y_hi = max((mu + sd).max() * 1.04, mu.max() + 0.04)
     ax.set_ylim(0, y_hi)
-    ax.text(lonset - 0.01, 0.97, rf'$\lambda_{{\mathrm{{onset}}}}\approx{lonset:.2f}$',
+    ax.set_xlim(0, 1)
+    ax.text(max(lonset - 0.02, 0.02), 0.97,
+            rf'$\lambda_{{\mathrm{{onset}}}}\approx{lonset:.2f}$',
             transform=ax.get_xaxis_transform(),
-            color=C_GRAY, fontsize=7, va='top', ha='right')
-    ax.text(min(lstar + 0.01, 0.995), 0.97, rf'$\lambda^{{*}}\approx{lstar:.2f}$',
-            transform=ax.get_xaxis_transform(),
-            color=C_VERM, fontsize=7, va='top', ha='left')
+            color=C_GRAY, fontsize=7, va='top', ha='right', clip_on=True)
+    # ha='right' at the right edge so "$\lambda^*\approx0.95$" cannot clip the '5'
+    ax.text(0.98, 0.97, rf'$\lambda^{{*}}\approx{lstar:.2f}$',
+            transform=ax.transAxes,
+            color=C_VERM, fontsize=7, va='top', ha='right', clip_on=True)
 
     # Direct-label the two levels the text compares (≈3×)
     ax.text(0.012, mu[0] + 0.008, f'{mu[0]:.2f}',
-            color=C_BLUE, fontsize=7, va='bottom', ha='left')
-    ax.annotate(f'{mu[-1]:.2f}', xy=(1.0, mu[-1]),
-                xytext=(-3, 5), textcoords='offset points',
-                color=C_BLUE, fontsize=7, ha='right', va='bottom')
+            color=C_BLUE, fontsize=7, va='bottom', ha='left', clip_on=True)
+    ax.text(0.98, mu[-1], f'{mu[-1]:.2f}',
+            transform=ax.get_yaxis_transform(),
+            color=C_BLUE, fontsize=7, ha='right', va='bottom', clip_on=True)
 
     ax.set_xlabel(r'self-funding fraction $\lambda$', fontsize=9, labelpad=6)
     ax.set_ylabel('mean cascade size\n(fraction of network)', fontsize=9, labelpad=6)
-    ax.set_xlim(0, 1)
     ax.spines['left'].set_bounds(0, min(mu.max(), y_hi))
     ax.spines['bottom'].set_bounds(0, 1)
 

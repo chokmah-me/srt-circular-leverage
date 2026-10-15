@@ -2,6 +2,11 @@
 
 All notable changes to this companion repository are documented here.
 
+## [Unreleased] — 2026-10-15 — Figure 1 axis labels (repo-only)
+
+- Kept Figure 1 λ_onset / λ* labels fully inside the axes (`srt_simulation.py` + regenerated PNG/PDF)
+- Repo companion only — no new Zenodo paper version; science path and claims unchanged
+
 ## [Unreleased] — 2026-09-04 — figure restyle (repo-only)
 
 - Restyled Figures 1–6 (PNG/PDF): in-figure titles, reading guides, reserved title/footer bands
