@@ -1197,56 +1197,64 @@ def plot_all(sweep_result: dict, kappa_results: dict,
 # SECTION 5: Proxy metrics + main()
 # ---------------------------------------------------------------------------
 
-# Current Q1 2026 readings from public sources (see paper §5a).
-# These are empirical snapshots, not model output.
+# Readings as of Q3 2026 (paper v2.1, section 6 and Table 2).
+# These are empirical snapshots, not model output. They do not enter
+# lambda_trigger, lead_fraction or rank; those come from the sweep only.
+COCKPIT_AS_OF = 'Q3 2026'
 COCKPIT_CURRENT = {
     'bdc_dispersion': {
         'label':     'BDC price dispersion',
-        'value':     'Extreme: Blue Owl -68% YTD; FSK/GSBD dividend cuts; '
-                     '$20.8B redemption requests Q1',
-        'source':    'NYSE prices; KBRA/Fitch; Woozle Research (Apr 2026)',
-        'signal':    'RED',
-        'threshold': 'Cross-sectional std dev > 15% = elevated',
+        'value':     '0.049 median daily cross-sectional std, quarter-rebased, '
+                     '15-name panel (1.35x the 2023-24 median of 0.037)',
+        'source':    'bdc_dispersion.py; results/metric2_bdc_dispersion.csv (Oct 2026)',
+        'signal':    'AMBER',
+        'threshold': 'Re-based price dispersion > 1.25x 2023-24 median = AMBER; '
+                     '> 2.0x = RED',
     },
     'clo_spread': {
         'label':     'CLO BB minus AAA spread',
-        'value':     '~470-615 bps (US BB 600-750 bps; AAA ~130 bps over SOFR)',
-        'source':    'TwentyFour AM (Mar 2026); PitchBook CLO Outlook',
-        'signal':    'AMBER/RED',
+        'value':     'Q3: BB widened modestly, AAA ~2 bps tighter vs 31 May; '
+                     'gap wider again',
+        'source':    'Valuation Research Corp. Q3 2026 CLO/ABS update',
+        'signal':    'RED',
         'threshold': 'Gap > 400 bps = elevated mezzanine stress',
     },
     'sofr_ois': {
         'label':     'SOFR-OIS spread',
-        'value':     '~10-15 bps; interbank stress not yet acute',
-        'source':    'FRED SOFR series; NY Fed (Apr 2026)',
+        'value':     'SOFR 3.87-3.90%, at or just below IORB (early Oct 2026), '
+                     'after the 16 Sep 2026 hike',
+        'source':    'NY Fed; FRED SOFR series (Oct 2026)',
         'signal':    'GREEN',
         'threshold': '> 30 bps = emerging stress; > 50 bps = acute',
     },
     'pik_ratio': {
         'label':     'PIK ratio in BDC filings (bad PIK)',
-        'value':     '6.4% of total private debt volume (KBRA/Fitch Q1 2026)',
-        'source':    'KBRA; Fitch Ratings; SEC EDGAR 10-Q filings',
+        'value':     'Bad PIK 6.4% of private debt volume (Q1, latest); '
+                     'BDC PIK ~10% of loans; new-loan PIK provisions falling',
+        'source':    'KBRA; Fitch; Boston Fed CPP 26-6 (Aug 2026); SEC EDGAR',
         'signal':    'RED',
         'threshold': '> 4% bad PIK = late-cycle stress; > 6% = critical',
     },
     'secondary_pricing': {
         'label':     'Secondary market pricing of private credit stakes',
-        'value':     'Multiple platforms gating at 5% cap; Blue Owl all-time low',
-        'source':    'Setter Capital; public BDC prices (Apr 2026)',
+        'value':     'Q3 gates still bind: Cliffwater 5% paid vs ~16% asked '
+                     '(gated since Q1); BCRED 5% vs ~10%',
+        'source':    'Fund tender letters; Private Equity Wire (Sep 2026)',
         'signal':    'RED',
         'threshold': 'Widespread gating = effective NAV discount signal',
     },
     'cds_volume': {
-        'label':     'CDS index volume (CDX IG/HY)',
-        'value':     '$4.5T Q1 2026, +69% YoY, all-time record. '
-                     'New S&P CDX Financials (FINDX) launched Apr 13 2026.',
-        'source':    'ISDA/DTCC; Seeking Alpha; Traders Magazine (Apr 2026)',
-        'signal':    'RED',
-        'threshold': 'Record volume = systemic hedging demand',
+        'label':     'CDS index volume (ISDA index credit derivatives)',
+        'value':     'Q2 2026 $5.1T (1.76x 2023-24 median ~$2.9T), after Q1 $7.4T '
+                     '(2.55x). Q3 pending ISDA (mid-Nov). FINDX thin.',
+        'source':    'ISDA SwapsInfo (May, Aug 2026); IFR (May 2026)',
+        'signal':    'PENDING',
+        'threshold': 'Quarterly index notional > 1.25x 2023-24 median = AMBER; '
+                     '> 2.0x = RED',
     },
 }
 
-SIGNAL_ORDER = {'RED': 0, 'AMBER/RED': 1, 'AMBER': 2, 'GREEN': 3}
+SIGNAL_ORDER = {'RED': 0, 'AMBER/RED': 1, 'AMBER': 2, 'GREEN': 3, 'PENDING': 4}
 
 
 def compute_proxy_metrics(sweep_result: dict) -> dict:
@@ -1315,7 +1323,8 @@ def compute_proxy_metrics(sweep_result: dict) -> dict:
 def export_cockpit_csv(sweep_result: dict, out_dir: str = 'figures') -> str:
     """
     Export the cockpit table as CSV for paper supplementary material.
-    Columns: rank, metric, current_value, signal, lambda_trigger, lead_fraction, source
+    Columns: rank, metric, current_value, signal, lambda_trigger, lead_fraction,
+    source, threshold, as_of
     """
     os.makedirs(out_dir, exist_ok=True)
     metrics = compute_proxy_metrics(sweep_result)
@@ -1324,8 +1333,9 @@ def export_cockpit_csv(sweep_result: dict, out_dir: str = 'figures') -> str:
     path = os.path.join(out_dir, 'cockpit_metrics.csv')
     with open(path, 'w', newline='') as f:
         w = csv.writer(f)
-        w.writerow(['rank', 'metric', 'current_value_q1_2026',
-                    'signal', 'lambda_trigger', 'lead_fraction', 'source'])
+        w.writerow(['rank', 'metric', 'current_value', 'signal',
+                    'lambda_trigger', 'lead_fraction', 'source',
+                    'threshold', 'as_of'])
         for key, vals in rows:
             c = COCKPIT_CURRENT[key]
             w.writerow([
@@ -1336,6 +1346,8 @@ def export_cockpit_csv(sweep_result: dict, out_dir: str = 'figures') -> str:
                 vals['lambda_trigger'],
                 vals['lead_fraction'],
                 c['source'],
+                c['threshold'],
+                COCKPIT_AS_OF,
             ])
     return path
 
@@ -1468,7 +1480,7 @@ def main(
     )
     print(f"      {summary_path}")
 
-    print("\n=== Cockpit summary (Q1 2026 readings) ===")
+    print(f"\n=== Cockpit summary ({COCKPIT_AS_OF} readings) ===")
     ranked = sorted(metrics.items(), key=lambda x: x[1]['rank'])
     for key, vals in ranked:
         c = COCKPIT_CURRENT[key]

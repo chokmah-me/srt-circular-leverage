@@ -20,7 +20,7 @@ Synthetic Risk Transfers let banks offload credit risk to private funds while ke
 
 We build a directed network model of bank-NBFI SRT relationships and simulate contagion cascades across 1,000 random network realizations per λ value. Main result: cascade risk is not linear in λ. It shows a two-stage transition, first departing from baseline at λ_onset ≈ 0.85–0.95, then jumping sharply at λ* ≈ 0.95. The transition *location* is invariant across network density, investor concentration, shock size, and tranche thickness. What density does control is cascade *magnitude* beyond the threshold, from 0.18 at low density to 0.61 at high density.
 
-We also propose six publicly observable proxy metrics, no Bloomberg required, ranked by sensitivity-weighted ordinal position relative to λ*. As of Q2/Q3 2026, five of six are red (up from four in Q1). SOFR-OIS remains green.
+We also propose six publicly observable proxy metrics, no Bloomberg required, ranked by sensitivity-weighted ordinal position relative to λ*. As of Q3 2026: three red, one amber, one green, one pending. SOFR-OIS remains green.
 
 ---
 
@@ -50,7 +50,7 @@ Simulation outputs land in `figures/`:
 - `fig4_lppls_illustration.pdf` — synthetic LPPLS motivating figure (labeled synthetic)
 - `fig5_density_sensitivity.pdf` — network density sensitivity (new)
 - `fig6_tranche_comparison.pdf` — δ = 0.08 vs empirical median δ = 0.15
-- `cockpit_metrics.csv` — six proxy metrics (Q1 snapshot in the CSV; paper Table 2 is Q2/Q3)
+- `cockpit_metrics.csv` — six proxy metrics (Q3 2026 readings (paper v2.1 Table 2))
 
 ---
 
@@ -72,12 +72,15 @@ scipy>=1.10
 ```
 srt_simulation.py         # network builder, cascade engine, MC sweep, plots, main()
 verify_srt_claims.py      # computational claim gate (thin MC)
+bdc_dispersion.py         # Metric 2 BDC price dispersion (live market data)
 claim-manifest.json       # claim-gate manifest (cd-claim-gate/v1)
 results/                  # gate evidence + claim-holds brief
+results/metric2_bdc_dispersion.csv  # Metric 2 quarterly readings
 figures/                  # generated figures / cockpit CSV
 dyb-2026k-circular-nw-risk-v2.md   # paper (Markdown source)
 dyb-2026k-circular-nw-risk-v2.pdf  # export for Zenodo
 dyb-2026k-circular-nw-risk-v1.md   # v1 source (superseded)
+dyb-2026k-circular-nw-risk-v2.1.md # v2.1 prep (Metric 5 Q3 pending ISDA)
 ROBUSTNESS_CHECK_dyb-2026k-v2.md   # companion stress test (not a paper version)
 ZENODO.md                         # concept vs version DOIs + mint packet
 integrity-manifest.json
@@ -85,6 +88,7 @@ README.md
 CHANGELOG.md
 LICENSE
 requirements.txt
+requirements-market.txt           # yfinance + pandas for bdc_dispersion.py
 CITATION.cff
 ```
 

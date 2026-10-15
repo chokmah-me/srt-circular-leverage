@@ -1,7 +1,7 @@
-rank,metric,current_value_q1_2026,signal,lambda_trigger,lead_fraction,source
-1,Secondary market pricing of private credit stakes,Multiple platforms gating at 5% cap; Blue Owl all-time low,RED,0.588,0.381,Setter Capital; public BDC prices (Apr 2026)
-2,BDC price dispersion,Extreme: Blue Owl -68% YTD; FSK/GSBD dividend cuts; $20.8B redemption requests Q1,RED,0.602,0.366,NYSE prices; KBRA/Fitch; Woozle Research (Apr 2026)
-3,PIK ratio in BDC filings (bad PIK),6.4% of total private debt volume (KBRA/Fitch Q1 2026),RED,0.616,0.352,KBRA; Fitch Ratings; SEC EDGAR 10-Q filings
-4,CLO BB minus AAA spread,~470-615 bps (US BB 600-750 bps; AAA ~130 bps over SOFR),AMBER/RED,0.63,0.337,TwentyFour AM (Mar 2026); PitchBook CLO Outlook
-5,CDS index volume (CDX IG/HY),"$4.5T Q1 2026, +69% YoY, all-time record. New S&P CDX Financials (FINDX) launched Apr 13 2026.",RED,0.672,0.293,ISDA/DTCC; Seeking Alpha; Traders Magazine (Apr 2026)
-6,SOFR-OIS spread,~10-15 bps; interbank stress not yet acute,GREEN,0.756,0.204,FRED SOFR series; NY Fed (Apr 2026)
+rank,metric,current_value,signal,lambda_trigger,lead_fraction,source,threshold,as_of
+1,Secondary market pricing of private credit stakes,Q3 gates still bind: Cliffwater 5% paid vs ~16% asked (gated since Q1); BCRED 5% vs ~10%,RED,0.588,0.381,Fund tender letters; Private Equity Wire (Sep 2026),Widespread gating = effective NAV discount signal,Q3 2026
+2,BDC price dispersion,"0.049 median daily cross-sectional std, quarter-rebased, 15-name panel (1.35x the 2023-24 median of 0.037)",AMBER,0.602,0.366,bdc_dispersion.py; results/metric2_bdc_dispersion.csv (Oct 2026),Re-based price dispersion > 1.25x 2023-24 median = AMBER; > 2.0x = RED,Q3 2026
+3,PIK ratio in BDC filings (bad PIK),"Bad PIK 6.4% of private debt volume (Q1, latest); BDC PIK ~10% of loans; new-loan PIK provisions falling",RED,0.616,0.352,KBRA; Fitch; Boston Fed CPP 26-6 (Aug 2026); SEC EDGAR,> 4% bad PIK = late-cycle stress; > 6% = critical,Q3 2026
+4,CLO BB minus AAA spread,"Q3: BB widened modestly, AAA ~2 bps tighter vs 31 May; gap wider again",RED,0.63,0.337,Valuation Research Corp. Q3 2026 CLO/ABS update,Gap > 400 bps = elevated mezzanine stress,Q3 2026
+5,CDS index volume (ISDA index credit derivatives),"Q2 2026 $5.1T (1.76x 2023-24 median ~$2.9T), after Q1 $7.4T (2.55x). Q3 pending ISDA (mid-Nov). FINDX thin.",PENDING,0.672,0.293,"ISDA SwapsInfo (May, Aug 2026); IFR (May 2026)",Quarterly index notional > 1.25x 2023-24 median = AMBER; > 2.0x = RED,Q3 2026
+6,SOFR-OIS spread,"SOFR 3.87-3.90%, at or just below IORB (early Oct 2026), after the 16 Sep 2026 hike",GREEN,0.756,0.204,NY Fed; FRED SOFR series (Oct 2026),> 30 bps = emerging stress; > 50 bps = acute,Q3 2026
