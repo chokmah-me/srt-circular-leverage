@@ -14,7 +14,7 @@ All notable changes to this companion repository are documented here.
 ### Restated (v2 readings changed under v2.1 rules)
 
 - Metric 2 (BDC dispersion), Q2 2026: RED → AMBER. v2 was judged by eye; v2.1 pins the measure (15-name panel, quarter-rebased median daily std) and thresholds (1.25x / 2.0x the 2023-24 median). The old code threshold ("std dev > 15%") is dropped
-- Metric 5 (CDS index volume), Q2 2026: RED → AMBER under the pinned level rule (1.25x / 2.0x the 2023-24 median quarter, ~$2.9T ISDA index notional). Q3 is PENDING until ISDA's Q3 SwapsInfo review (expected mid-November 2026)
+- Metric 5 (CDS index volume), Q2 2026: RED → AMBER under the pinned level rule (1.25x / 2.0x the 2023-24 median quarter, ~$2.85T ISDA index notional). Q3 is PENDING until ISDA's Q3 SwapsInfo review (expected mid-November 2026)
 - Metric 5, Q1 2026 figure and source replaced: "$4.5T, +69% YoY, record" (Kobeissi Letter, social media) → $7.4T, +39.8% YoY (ISDA SwapsInfo Q1 2026). Reading stays RED
 - Metric 5 text: FINDX no longer described as a real-time price for private credit risk; it traded thinly (IFR, May 2026)
 

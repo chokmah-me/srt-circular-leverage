@@ -1245,8 +1245,8 @@ COCKPIT_CURRENT = {
     },
     'cds_volume': {
         'label':     'CDS index volume (ISDA index credit derivatives)',
-        'value':     'Q2 2026 $5.1T (1.76x 2023-24 median ~$2.9T), after Q1 $7.4T '
-                     '(2.55x). Q3 pending ISDA (mid-Nov). FINDX thin.',
+        'value':     'Q2 2026 $5.1T (1.79x 2023-24 median ~$2.85T), after Q1 $7.4T '
+                     '(2.60x). Q3 pending ISDA (mid-Nov). FINDX thin.',
         'source':    'ISDA SwapsInfo (May, Aug 2026); IFR (May 2026)',
         'signal':    'PENDING',
         'threshold': 'Quarterly index notional > 1.25x 2023-24 median = AMBER; '
