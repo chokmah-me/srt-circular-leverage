@@ -10,6 +10,7 @@ All notable changes to this companion repository are documented here.
 - New §8 limitation: granular reference pools assumed; concentrated data-centre pools violate it
 - `srt_simulation.py`: `COCKPIT_CURRENT` updated to Q3 2026 readings and thresholds; new `COCKPIT_AS_OF`; CSV columns now `current_value`, `threshold`, `as_of` (was `current_value_q1_2026`). Readings are display only and do not enter `lambda_trigger`, `lead_fraction` or rank
 - Added `bdc_dispersion.py` (Metric 2) and `results/metric2_bdc_dispersion.csv`; market deps in `requirements-market.txt`, kept out of `requirements.txt` and out of `verify_srt_claims.py`
+- Added Figure 7 (`plot_metric2_sparkline.py`): Metric 2 sparkline through Q3 2026, 1.25x / 2.0x reference lines. Simulation Figures 1-6 unchanged
 
 ### Restated (v2 readings changed under v2.1 rules)
 

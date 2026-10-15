@@ -262,7 +262,9 @@ What it measures: the price at which investors sell private credit fund stakes o
 
 ### Metric 2: BDC stock price dispersion
 
-What it measures: the cross-sectional standard deviation of publicly traded Business Development Company stock prices. v2.1 pins the computation. For each quarter, prices of a fixed 15-name panel (ARCC, OBDC, FSK, GSBD, GBDC, BXSL, MAIN, HTGC, TSLX, OCSL, PSEC, MFIC, CSWC, NMFC, CGBD) are divided by their first close of the quarter, the cross-sectional standard deviation is taken each day, and the quarter's reading is the median of those daily values. Re-basing each quarter removes the drift that comes from normalizing to a single start date. Status is set against the 2023-2024 median (0.037): red above 2.0 times, amber above 1.25 times. The thresholds are judgment calls, like the sensitivity weights. As a robustness check, the dispersion of quarterly total returns gives the same direction but never reaches red. BDCs hold the types of private credit loans that back SRT reference portfolios. When BDCs trade at similar prices, the market sees uniform credit quality. When dispersion rises sharply, the market is differentiating between managers, a sign that heterogeneous stress is emerging in the underlying portfolio. The script is in the repository (bdc_dispersion.py) and writes results/metric2_bdc_dispersion.csv. No Bloomberg required. Moody's downgraded the BDC sector outlook from stable to negative in Q1 2026; FSK and Goldman Sachs BDC cut dividends in January and February 2026. Readings: Q1 2026 0.074 (2.0 times baseline, red); Q2 0.047 (amber); Q3 0.049 (1.35 times, amber). Dispersion is off its Q1 extreme but has not returned to baseline. The metric is noisy: it read amber in Q1 2023 and Q4 2024 without a matching credit event, and only Q1 2026 crossed the red line in four years of data. Where to find it: Yahoo Finance tickers for ARCC, OBDC, FSK, GSBD, GBDC, and peers.
+What it measures: the cross-sectional standard deviation of publicly traded Business Development Company stock prices. v2.1 pins the computation. For each quarter, prices of a fixed 15-name panel (ARCC, OBDC, FSK, GSBD, GBDC, BXSL, MAIN, HTGC, TSLX, OCSL, PSEC, MFIC, CSWC, NMFC, CGBD) are divided by their first close of the quarter, the cross-sectional standard deviation is taken each day, and the quarter's reading is the median of those daily values. Re-basing each quarter removes the drift that comes from normalizing to a single start date. Status is set against the 2023-2024 median (0.037): red above 2.0 times, amber above 1.25 times. The thresholds are judgment calls, like the sensitivity weights. As a robustness check, the dispersion of quarterly total returns gives the same direction but never reaches red. BDCs hold the types of private credit loans that back SRT reference portfolios. When BDCs trade at similar prices, the market sees uniform credit quality. When dispersion rises sharply, the market is differentiating between managers, a sign that heterogeneous stress is emerging in the underlying portfolio. The script is in the repository (bdc_dispersion.py) and writes results/metric2_bdc_dispersion.csv. No Bloomberg required. Moody's downgraded the BDC sector outlook from stable to negative in Q1 2026; FSK and Goldman Sachs BDC cut dividends in January and February 2026. Readings: Q1 2026 0.074 (2.0 times baseline, red); Q2 0.047 (amber); Q3 0.049 (1.35 times, amber). Dispersion is off its Q1 extreme but has not returned to baseline. The metric is noisy: it read amber in Q1 2023 and Q4 2024 without a matching credit event, and only Q1 2026 crossed the red line in four years of data. Figure 7 plots that path. Where to find it: Yahoo Finance tickers for ARCC, OBDC, FSK, GSBD, GBDC, and peers.
+
+![Figure 7: BDC price dispersion (Metric 2), quarter-rebased median daily cross-sectional standard deviation on a 15-name panel, through Q3 2026. Grey dotted line is the 2023-24 median; orange dashed line and band mark 1.25 times (amber); vermillion dashed line and band mark 2.0 times (red). Direct-labeled values are Q1 2026 (red) and Q3 2026 (amber).](fig7_metric2_dispersion.png)
 
 ### Metric 3: PIK ratio in BDC 10-Q filings
 
@@ -474,6 +476,14 @@ python srt_simulation.py --quick
 ```
 
 Output: `figures/fig1_phase_transition.pdf`, `fig2_distributions.pdf`, `fig3_sensitivity.pdf`, `fig4_lppls_illustration.pdf`, `fig5_density_sensitivity.pdf`, `fig6_tranche_comparison.pdf`, and `figures/cockpit_metrics.csv`.
+
+Figure 7 is drawn from the saved Metric 2 CSV (no simulation re-run):
+
+```bash
+python plot_metric2_sparkline.py
+```
+
+Output: `figures/fig7_metric2_dispersion.pdf`.
 
 The random seed is set globally (`DEFAULT_SEED = 42`) for reproducibility. To verify stability across seeds:
 

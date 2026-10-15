@@ -52,6 +52,14 @@ Simulation outputs land in `figures/`:
 - `fig6_tranche_comparison.pdf` — δ = 0.08 vs empirical median δ = 0.15
 - `cockpit_metrics.csv` — six proxy metrics (Q3 2026 readings (paper v2.1 Table 2))
 
+Metric 2 sparkline (paper v2.1 Figure 7), from the saved CSV:
+
+```
+python plot_metric2_sparkline.py
+```
+
+- `fig7_metric2_dispersion.pdf` — BDC price dispersion path, Q1 2023 through Q3 2026
+
 ---
 
 ## Requirements
@@ -73,6 +81,7 @@ scipy>=1.10
 srt_simulation.py         # network builder, cascade engine, MC sweep, plots, main()
 verify_srt_claims.py      # computational claim gate (thin MC)
 bdc_dispersion.py         # Metric 2 BDC price dispersion (live market data)
+plot_metric2_sparkline.py # Figure 7 from the saved Metric 2 CSV
 claim-manifest.json       # claim-gate manifest (cd-claim-gate/v1)
 results/                  # gate evidence + claim-holds brief
 results/metric2_bdc_dispersion.csv  # Metric 2 quarterly readings
